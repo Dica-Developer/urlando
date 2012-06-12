@@ -58,13 +58,13 @@ function animate(iframe) {
   }else{
     if(randomInterval)clearInterval(randomInterval);
   }
-  console.log(options);
-  $('#iFrames').css('-webkit-transform', 'translate(' + -getNextPosition(iframe).x + 'px,' + -getNextPosition(iframe).y + 'px) scale(1,1)');
+  setTimeout(function(){
+    $('#iFrames').css('-webkit-transform', 'translate(' + -getNextPosition(iframe).x + 'px,' + -getNextPosition(iframe).y + 'px) scale(1,1)');
+  }, 1000);
 }
 
 $(function(){
   $(document).on('keyup',function(e){
-    console.log(e);
     var keycode = e.which;
     if(keycode > 48 && keycode <58){
       var next = keycode - 49;
