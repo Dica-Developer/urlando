@@ -7,7 +7,7 @@ const options = {
   ratio: 0
 };
 function setOptions(storedOptions, urlsLength){
-  options.relaod = storedOptions.reload;
+  options.reload = storedOptions.reload;
   options.nrOfiFrames = urlsLength;
   options.duration = parseInt(storedOptions.duration)*1000;
   options.resolution = storedOptions.resolution;
