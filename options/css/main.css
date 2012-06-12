@@ -1,0 +1,9 @@
+dt, dd {
+    margin:0 10px;
+    line-height: 30px;
+}
+dt {
+    width: 150px;
+    float: left;
+    text-align: right;
+}
