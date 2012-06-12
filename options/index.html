@@ -14,13 +14,21 @@
     <script type="text/javascript"src="../js/htmlTemplates.js"></script>
     <script type="text/javascript">
       function addUrl(){
-        $.tmpl('optionUrlsEmpty').appendTo('#urlSetup');
+        var urlInputDiv = $.tmpl('optionUrls');
+        urlInputDiv.find('.minus').on('click',function(e){
+          $(this).parent().remove();
+        }).show();
+        urlInputDiv.find('.plus').on('click', function(){
+          addUrl();
+        });
+        urlInputDiv.appendTo('#urlSetup');
       }
       var saveOptions = function(){
         var urlInputs = $('#urlSetup').find('input');
         var resolution = $('#resolution').find(':selected').val();
         var ratio= $('#ratio').find(':selected').val();
         var reload = $('#reload').is(':checked');
+        var random = $('#random').is(':checked');
         var duration = $('#duration').find(':selected').val();
         var urls = [];
         var options;
@@ -30,7 +38,7 @@
           };
         });
         localStorage["urls"] = JSON.stringify(urls);
-        localStorage["options"] = JSON.stringify({resolution: resolution, ratio: ratio,reload:reload,duration:duration});
+        localStorage["options"] = JSON.stringify({resolution: resolution, ratio: ratio,reload:reload,duration:duration, random:random});
       };
       $(function(){
         $('#resolution').on('change',function(){
@@ -42,14 +50,29 @@
         });
         $('#saveOptions').on('click', saveOptions);
 
-
+        var urlInputDiv;
         if('undefined' !== typeof localStorage["urls"]){
           var urls = JSON.parse(localStorage["urls"]);
-          $.tmpl('optionUrls', urls).appendTo('#urlSetup');
+          for (var idx = 0; idx < urls.length; idx++) {
+            urlInputDiv = $.tmpl('optionUrls');
+            if(idx>0){
+              urlInputDiv.find('.minus').on('click',function(e){
+                $(this).parent().remove();
+              }).show();
+            }
+            urlInputDiv.find('.plus').on('click', function(){
+              addUrl();
+            });
+            urlInputDiv.find('.urlInput').val(urls[idx].url);
+            urlInputDiv.appendTo('#urlSetup');
+          }
         }else{
-          $.tmpl('optionUrlsEmpty').appendTo('#urlSetup');
+          urlInputDiv = $.tmpl('optionUrls');
+          urlInputDiv.find('.plus').on('click', function(){
+            addUrl();
+          });
+          urlInputDiv.appendTo('#urlSetup');
         }
-//        TODO render options
         if('undefined' !== typeof localStorage["options"]){
           var options = JSON.parse(localStorage["options"]);
           $('#resolution option[value="'+options.resolution+'"]').attr('selected',true).trigger('change');
@@ -57,7 +80,6 @@
           $('#duration option[value="'+options.duration+'"]').attr('selected',true);
           var checkbox = $('#reload');
           if(options.reload){
-            console.log(checkbox);
             checkbox.attr('checked','checked');
           }else{
             checkbox.attr('checked',null);
@@ -106,6 +128,12 @@
       </dt>
       <dd>
         <input type="checkbox" value="reload" checked="checked" id="reload">
+      </dd>
+      <dt>
+        <label for="random">Random:</label>
+      </dt>
+      <dd>
+        <input type="checkbox" value="random" checked="checked" id="random">
       </dd>
     </dl>
     <div id="urlSetup"></div>
