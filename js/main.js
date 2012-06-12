@@ -81,37 +81,11 @@ function animate(iframe) {
     $('#iFrame_' + iframe).attr('src', src);
   }
   randomInterval = setInterval(function() {
-    loadOptions();
     var nextP = nextPosition();
     animate(nextP);
   }, options.duration);
   var framePosition = getFramePosition(iframe);
   $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
-}
-
-function loadOptions() {
-  var urls = JSON.parse(localStorage["urls"]);
-  setOptions(JSON.parse(localStorage["options"]), urls.length);
-  var width = options.resolution;
-  var height;
-  if (width !== 'full') {
-    height = getHeight(width, options.ratio);
-  } else {
-    width = $(document).width();
-    height = $(document).height();
-  }
-  var iFrameOptions = [];
-  for (var idx = 0; idx < urls.length; idx++) {
-    iFrameOptions[iFrameOptions.length] = {
-      url: urls[idx].url,
-      width: width,
-      height: height,
-      idx: idx,
-      x: getPosition(idx, width, height).x,
-      y: getPosition(idx, width, height).y
-    }
-  }
-  addIFrames(iFrameOptions);
 }
 
 $(function(){
@@ -128,7 +102,29 @@ $(function(){
   });
 
   if ('undefined' !== typeof localStorage["urls"]) {
-    loadOptions();
+    var urls = JSON.parse(localStorage["urls"]);
+    setOptions(JSON.parse(localStorage["options"]), urls.length);
+    var width = options.resolution;
+    var height;
+    if (width !== 'full') {
+      height = getHeight(width, options.ratio);
+    } else {
+      width = $(document).width();
+      height = $(document).height();
+    }
+    var iFrameOptions = [];
+    var urls = JSON.parse(localStorage["urls"]);
+    for (var idx = 0; idx < urls.length; idx++) {
+      iFrameOptions[iFrameOptions.length] = {
+        url: urls[idx].url,
+        width: width,
+        height: height,
+        idx: idx,
+        x: getPosition(idx, width, height).x,
+        y: getPosition(idx, width, height).y
+      }
+    }
+    addIFrames(iFrameOptions);
     addCSSStyles();
     randomInterval = setInterval(function(){
       animate(0);
