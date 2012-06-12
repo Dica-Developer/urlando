@@ -1,0 +1,21 @@
+{
+  "name": "Another Wallboard",
+  "version": "0.1",
+  "description": "",
+  "app": {
+    "launch": {
+      "local_path": "main.html",
+      "container": "tab"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://localhost/"],
+      "js": ["js/main.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "options_page": "options/index.html",
+  "permissions": ["fileBrowserHandler", "unlimitedStorage", "http://localhost/"]
+}
+

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Another Wallboard Options</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/chrome_shared.css" />
+    <link rel="stylesheet" href="css/browser.css" />
+    <link rel="stylesheet" href="css/checkbox.css" />
+    <link rel="stylesheet" href="css/button.css" />
+    <link rel="stylesheet" href="css/select.css" />
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.min.js"></script>
+    <script type="text/javascript"src="../js/htmlTemplates.js"></script>
+    <script type="text/javascript">
+      function addUrl(){
+        $.tmpl('optionUrlsEmpty').appendTo('#urlSetup');
+      }
+      var saveOptions = function(){
+        var urlInputs = $('#urlSetup').find('input');
+        var resolution = $('#resolution').find(':selected').val();
+        var ratio= $('#ratio').find(':selected').val();
+        var reload = $('#reload').is(':checked');
+        var duration = $('#duration').find(':selected').val();
+        var urls = [];
+        var options;
+        urlInputs.each(function(){
+          urls[urls.length] = {
+            url: $(this).val()
+          };
+        });
+        localStorage["urls"] = JSON.stringify(urls);
+        localStorage["options"] = JSON.stringify({resolution: resolution, ratio: ratio,reload:reload,duration:duration});
+      };
+      $(function(){
+        if('undefined' !== typeof localStorage["urls"]){
+          var urls = JSON.parse(localStorage["urls"]);
+          $.tmpl('optionUrls', urls).appendTo('#urlSetup');
+        }else{
+          $.tmpl('optionUrlsEmpty').appendTo('#urlSetup');
+        }
+//        TODO render options
+//        if('undefined' !== typeof localStorage["options"]){
+//          var options = localStorage["options"];
+//        }
+        $('#resolution').on('change',function(){
+          if($(this).val() === 'full'){
+            $('#ratio').attr('disabled','disabled');
+          }else{
+            $('#ratio').attr('disabled',null);
+          }
+        });
+        $('#saveOptions').on('click', saveOptions);
+      });
+    </script>
+    <!--<script type="text/javascript" src="main.js"></script>-->
+  <!--<script>-->
+  <!--chrome.extension.onRequest.addListener(-->
+    <!--function(request, sender, sendResponse) {-->
+      <!--var pattLastFM = new RegExp("^chrome-extension://.+/options/authenticate_lastfm\.html.token=(.+)$");-->
+      <!--var patt = new RegExp("^ubuntuone://(.+):(.+)@syncml\.one\.ubuntu\.com$");-->
+      <!--if (patt.test(request.url)) {-->
+        <!--var match = patt.exec(request.url);-->
+        <!--document.querySelector("#loginBox").value = match[1];-->
+        <!--document.querySelector("#passwordBox").value = match[2];-->
+        <!--document.querySelector("#serverUrlBox").value = "https://streaming.one.ubuntu.com";-->
+        <!--saveLogin();-->
+        <!--savePassword();-->
+        <!--saveServerUrl();-->
+      <!--} else if(pattLastFM.test(request.url)) {-->
+        <!--var match = pattLastFM.exec(request.url);-->
+        <!--(new Scrobbler(null, null)).getSession(match[1], function(data, textStatus, jqXHR) {-->
+          <!--if (undefined === data.error) {-->
+            <!--localStorage["audica.lastfm.sessionKey"] = data.session.key;-->
+            <!--localStorage["audica.lastfm.login"] = data.session.name;-->
+            <!--document.querySelector("#lastfmUserLink").innerHTML = data.session.name;-->
+            <!--document.querySelector("#lastfmUserLink").style.display = "block";-->
+            <!--document.querySelector("#lastfmLogoutLink").style.display = "block";-->
+            <!--document.querySelector("#lastfmLoginLink").style.display = "none";-->
+            <!--document.querySelector("#lastfmUserLabel").style.display = "block";-->
+          <!--} else {-->
+            <!--alert("It failed to get a session key." + data.error + " - " + data.message);-->
+          <!--}-->
+        <!--}, null);-->
+      <!--} else {-->
+        <!--alert("It failed to retreive the authentication credentials. The returned url is invalid '" + request.url + "'.");-->
+      <!--}-->
+      <!--chrome.tabs.remove(sender.tab.id);-->
+    <!--}-->
+  <!--);-->
+  <!--</script>-->
+  </head>
+  <body>
+    <h1>Set url s to display</h1>
+    <label for="resolution">Resolution</label>
+    <select id="resolution">
+      <option value="640">640</option>
+      <option value="800" selected="selected">800</option>
+      <option value="1024">1024</option>
+      <option value="full">Viewport</option>
+    </select>
+    <br>
+    <label for="ratio">Aspect Ratio</label>
+    <select id="ratio">
+      <option value="4/3">4:3</option>
+      <option value="16/9" selected="selected">16:9</option>
+    </select>
+    <br>
+    <label for="duration">Duration</label>
+    <select id="duration">
+      <option value="10">10sec</option>
+      <option value="30">30sec</option>
+      <option value="60" selected="selected">1min</option>
+      <option value="300">5min</option>
+      <option value="600">10min</option>
+    </select>
+    <br>
+    <label for="reload">Reload on change</label>
+    <input type="checkbox" value="reload" checked="checked" id="reload">
+    <br>
+    <div id="urlSetup"></div>
+    <div id="saveOptions">Save</div>
+  </body>
+</html>
