@@ -81,12 +81,21 @@ function animate(iframe) {
     $('#iFrame_' + iframe).attr('src', src);
   }
   randomInterval = setInterval(function() {
-    loadOptions();
+    checkIfOptionsChanged();
     var nextP = nextPosition();
     animate(nextP);
   }, options.duration);
   var framePosition = getFramePosition(iframe);
   $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
+}
+
+function checkIfOptionsChanged(){
+  var options = JSON.parse(localStorage["options"]);
+  if(options.changed){
+    options.changed = false;
+    localStorage["options"] = JSON.stringify(options);
+    window.location.reload();
+  }
 }
 
 function loadOptions() {
