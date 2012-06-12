@@ -4,7 +4,8 @@ const options = {
   nrOfiFrames: 0,
   duration:0,
   resolution:0,
-  ratio: 0
+  ratio: 0,
+  random: false
 };
 function setOptions(storedOptions, urlsLength){
   options.reload = storedOptions.reload;
@@ -37,54 +38,75 @@ function addCSSStyles(){
   });
 }
 
-function animate(iframe) {
-  function getNextPosition(iframe) {
-    var nextiFrame = $('#iFrame_' + iframe).parent();
-    var x = nextiFrame.data('x');
-    var y = nextiFrame.data('y');
-    return {x:x, y:y};
-  }
-  if (iframe === -1) {
-    $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(.3,.3)');
-    iframe = Math.floor(Math.random() * options.nrOfiFrames);
-    if (options.reload) {
-      var src = $('#iFrame_' + iframe).attr('src');
-      $('#iFrame_' + iframe).attr('src', src);
+function getFramePosition(iframe) {
+  var nextiFrame = $('#iFrame_' + iframe).parent();
+  var x = nextiFrame.data('x');
+  var y = nextiFrame.data('y');
+  return {x:x, y:y};
+}
+
+function nextPosition() {
+  if (options.random) {
+    currentIframe = Math.floor(Math.random() * options.nrOfiFrames);
+  } else {
+    currentIframe = currentIframe + 1
+    if (currentIframe >= options.nrOfiFrames) {
+      currentIframe = 0;
     }
-    if(randomInterval)clearInterval(randomInterval);
-    randomInterval = setInterval(function(){
-      animate(-1);
-    },options.duration);
-  }else{
-    if(randomInterval)clearInterval(randomInterval);
   }
-  setTimeout(function(){
-    $('#iFrames').css('-webkit-transform', 'translate(' + -getNextPosition(iframe).x + 'px,' + -getNextPosition(iframe).y + 'px) scale(1,1)');
-  }, 1000);
+  return currentIframe;
+}
+
+function previousPosition() {
+  if (options.random) {
+    currentIframe = Math.floor(Math.random() * options.nrOfiFrames);
+  } else {
+    currentIframe = currentIframe - 1
+    if (currentIframe < 0) {
+      currentIframe = options.nrOfiFrames - 1;
+    }
+  }
+  return currentIframe;
+}
+
+function animate(iframe) {
+  if (randomInterval) {
+    clearInterval(randomInterval);
+  }
+  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(.3,.3)');
+  if (options.reload) {
+    var src = $('#iFrame_' + iframe).attr('src');
+    $('#iFrame_' + iframe).attr('src', src);
+  }
+  randomInterval = setInterval(function() {
+    var nextP = nextPosition();
+    animate(nextP);
+  }, options.duration);
+  var framePosition = getFramePosition(iframe);
+  $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
 }
 
 $(function(){
   $(document).on('keyup',function(e){
+    var next = 0;
     var keycode = e.which;
-    if(keycode > 48 && keycode <58){
-      var next = keycode - 49;
-      if(next <= options.nrOfiFrames){
-        animate(next);
-      }else{
-        animate(-1);
+    if (keycode > 48 && keycode < 58) {
+        next = keycode - 49;
+      if (next > options.nrOfiFrames) {
+        next = 0;
       }
-    }else if(keycode === 48){
-      animate(-1);
     }
+    animate(next);
   });
-  if('undefined' !== typeof localStorage["urls"]){
+
+  if ('undefined' !== typeof localStorage["urls"]) {
     var urls = JSON.parse(localStorage["urls"]);
     setOptions(JSON.parse(localStorage["options"]), urls.length);
     var width = options.resolution;
     var height;
-    if(width !== 'full'){
+    if (width !== 'full') {
       height = getHeight(width, options.ratio);
-    }else{
+    } else {
       width = $(document).width();
       height = $(document).height();
     }
@@ -102,7 +124,7 @@ $(function(){
     addIFrames(iFrameOptions);
     addCSSStyles();
     randomInterval = setInterval(function(){
-      animate(-1);
+      animate(0);
     },options.duration);
   }else{
     $('<span>No Urls defined. Please go to options page to setup web sites to display</span>').appendTo('#iFrames');
