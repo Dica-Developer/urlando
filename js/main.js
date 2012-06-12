@@ -128,6 +128,6 @@ $(function(){
       animate(0);
     },options.duration);
   }else{
-    $('<span>No Urls defined. Please go to options page to setup web sites to display</span>').appendTo('#iFrames');
+    document.location = chrome.extension.getURL("options/index.html");
   }
 });
