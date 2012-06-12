@@ -79,17 +79,9 @@
           $('#ratio option[value="'+options.ratio+'"]').attr('selected',true);
           $('#duration option[value="'+options.duration+'"]').attr('selected',true);
           var reload = $('#reload');
-          if(options.reload){
-            reload.attr('checked','checked');
-          }else{
-            reload.attr('checked',null);
-          }
+          options.reload ? reload.attr('checked','checked') : reload.attr('checked',null);
           var random = $('#random');
-          if(options.random){
-            random.attr('checked','checked');
-          }else{
-            random.attr('checked',null);
-          }
+          options.random ? random.attr('checked','checked') : random.attr('checked',null);
         }
       });
     </script>
