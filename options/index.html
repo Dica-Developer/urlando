@@ -78,11 +78,17 @@
           $('#resolution option[value="'+options.resolution+'"]').attr('selected',true).trigger('change');
           $('#ratio option[value="'+options.ratio+'"]').attr('selected',true);
           $('#duration option[value="'+options.duration+'"]').attr('selected',true);
-          var checkbox = $('#reload');
+          var reload = $('#reload');
           if(options.reload){
-            checkbox.attr('checked','checked');
+            reload.attr('checked','checked');
           }else{
-            checkbox.attr('checked',null);
+            reload.attr('checked',null);
+          }
+          var random = $('#random');
+          if(options.random){
+            random.attr('checked','checked');
+          }else{
+            random.attr('checked',null);
           }
         }
       });
