@@ -1,4 +1,5 @@
 var randomInterval = null;
+var currentIframe = 0;
 const options = {
   reload: false,
   nrOfiFrames: 0,
