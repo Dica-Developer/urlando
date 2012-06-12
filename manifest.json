@@ -1,7 +1,7 @@
 {
   "name": "Urlando",
-  "version": "0.1",
-  "description": "",
+  "version": "0.2",
+  "description": "Cycles through user defined URLs in user defined intervals. Useful as dashboard / wallboard.",
   "icons": {
     "128": "icon128.png",
     "48": "icon48.png",
@@ -13,14 +13,7 @@
       "container": "tab"
     }
   },
-  "content_scripts": [
-    {
-      "matches": ["http://localhost/"],
-      "js": ["js/main.js"],
-      "run_at": "document_end"
-    }
-  ],
   "options_page": "options/index.html",
-  "permissions": ["fileBrowserHandler", "unlimitedStorage", "http://localhost/"]
+  "permissions": []
 }
 
