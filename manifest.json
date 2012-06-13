@@ -13,6 +13,5 @@
       "container": "tab"
     }
   },
-  "options_page": "options/index.html",
-  "permissions": []
+  "options_page": "options/index.html"
 }
