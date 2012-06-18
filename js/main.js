@@ -6,7 +6,8 @@ const options = {
   duration:0,
   resolution:0,
   ratio: 0,
-  random: false
+  random: false,
+  animation: true
 };
 function setOptions(storedOptions, urlsLength){
   options.reload = storedOptions.reload;
@@ -23,11 +24,14 @@ function addIFrames(urls){
 function getHeight(resolution, ratio){
   return  (resolution / ratio.split('/')[0]) * ratio.split('/')[1];
 }
-function getPosition(idx, width){//}, height){
+function getPosition(idx, width, height){
   var position = {};
-  if(idx <= 3){
+  if(idx < 3){
     position.x = (idx * width) + (idx*150);
     position.y = 0;
+  }else if(idx == 3 && idx < 6){
+    position.x = ((idx-3)* width) + ((idx-3)*150);
+    position.y = height+100;
   }
   return position;
 }
@@ -72,21 +76,32 @@ function previousPosition() {
 }
 
 function animate(iframe) {
+  checkIfOptionsChanged();
   if (randomInterval) {
     clearInterval(randomInterval);
+  }
+  if(options.animation){
+    randomInterval = setInterval(function() {
+      var nextP = nextPosition();
+      animate(nextP);
+    }, options.duration);
   }
   $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(.3,.3)');
   if (options.reload) {
     var src = $('#iFrame_' + iframe).attr('src');
     $('#iFrame_' + iframe).attr('src', src);
   }
-  randomInterval = setInterval(function() {
-    checkIfOptionsChanged();
-    var nextP = nextPosition();
-    animate(nextP);
-  }, options.duration);
-  var framePosition = getFramePosition(iframe);
-  $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
+  setTimeout(function(){
+    var framePosition = getFramePosition(iframe);
+    $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
+  },options.animation?5000:0);
+}
+
+function showOverview(){
+  if (randomInterval) {
+    clearInterval(randomInterval);
+  }
+  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(.3,.3)');
 }
 
 function checkIfOptionsChanged(){
@@ -132,8 +147,13 @@ $(function(){
       if (next > options.nrOfiFrames) {
         next = 0;
       }
+      animate(next);
+    }else if(keycode === 83){
+      options.animation = !options.animation;
+      if (randomInterval) clearInterval(randomInterval);
+    }else{
+      showOverview();
     }
-    animate(next);
   });
 
   if ('undefined' !== typeof localStorage["urls"]) {
