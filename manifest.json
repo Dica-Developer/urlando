@@ -1,6 +1,6 @@
 {
   "name": "Urlando",
-  "version": "0.2",
+  "version": "0.3",
   "description": "Cycles through user defined URLs in user defined intervals. Useful as dashboard / wallboard.",
   "icons": {
     "128": "icon128.png",
@@ -13,6 +13,5 @@
       "container": "tab"
     }
   },
-  "options_page": "options/index.html",
-  "permissions": []
+  "options_page": "options/index.html"
 }
