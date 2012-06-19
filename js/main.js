@@ -1,14 +1,15 @@
-var randomInterval = null;
-var currentIframe = 0;
+var intervalTimer = null;
+var nextIframe = 0;
 const options = {
   reload: false,
   nrOfiFrames: 0,
-  duration:0,
-  resolution:0,
+  duration: 10000,
+  resolution: 0,
   ratio: 0,
   random: false,
   animation: true
 };
+
 function setOptions(storedOptions, urlsLength){
   options.reload = storedOptions.reload;
   options.nrOfiFrames = urlsLength;
@@ -26,13 +27,8 @@ function getHeight(resolution, ratio){
 }
 function getPosition(idx, width, height){
   var position = {};
-  if(idx < 3){
-    position.x = (idx * width) + (idx*150);
-    position.y = 0;
-  }else if(idx == 3 && idx < 6){
-    position.x = ((idx-3)* width) + ((idx-3)*150);
-    position.y = height+100;
-  }
+  position.x = ((idx % 3) * width) + ((idx % 3) * 50);
+  position.y = (Math.floor(idx / 3) * height) + (Math.floor(idx / 3) * 50);
   return position;
 }
 
@@ -53,55 +49,71 @@ function getFramePosition(iframe) {
 
 function nextPosition() {
   if (options.random) {
-    currentIframe = Math.floor(Math.random() * options.nrOfiFrames);
+    nextIframe = Math.floor(Math.random() * options.nrOfiFrames);
   } else {
-    currentIframe = currentIframe + 1
-    if (currentIframe >= options.nrOfiFrames) {
-      currentIframe = 0;
+    nextIframe = nextIframe + 1
+    if (nextIframe >= options.nrOfiFrames) {
+      nextIframe = 0;
     }
   }
-  return currentIframe;
+  return nextIframe;
 }
 
 function previousPosition() {
   if (options.random) {
-    currentIframe = Math.floor(Math.random() * options.nrOfiFrames);
+    nextIframe = Math.floor(Math.random() * options.nrOfiFrames);
   } else {
-    currentIframe = currentIframe - 1
-    if (currentIframe < 0) {
-      currentIframe = options.nrOfiFrames - 1;
+    nextIframe = nextIframe - 1
+    if (nextIframe < 0) {
+      nextIframe = options.nrOfiFrames - 1;
     }
   }
-  return currentIframe;
+  return nextIframe;
 }
 
 function animate(iframe) {
   checkIfOptionsChanged();
-  if (randomInterval) {
-    clearInterval(randomInterval);
+  var scalingX;
+  switch (options.nrOfiFrames) {
+    case 1:
+      scalingX = "1";
+      break;
+    case 2:
+      scalingX =$(document).width() / ((2 * $(document).width()) + 50);
+      break;
+    default:
+      scalingX = ".325";
   }
-  if(options.animation){
-    randomInterval = setInterval(function() {
-      var nextP = nextPosition();
-      animate(nextP);
-    }, options.duration);
-  }
-  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(.3,.3)');
-  if (options.reload) {
-    var src = $('#iFrame_' + iframe).attr('src');
-    $('#iFrame_' + iframe).attr('src', src);
-  }
+  var scalingY = $(document).height() / (((Math.floor(options.nrOfiFrames / 3) + 1) * $(document).height()) + (Math.floor(options.nrOfiFrames / 3) * 50));
+  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale('+ scalingX +','+ scalingY +')');
   setTimeout(function(){
     var framePosition = getFramePosition(iframe);
     $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
-  },options.animation?5000:0);
+    nextIframe = nextPosition();
+    if (options.reload) {
+      var src = $('#iFrame_' + nextIframe).attr('src');
+      $('#iFrame_' + nextIframe).attr('src', src);
+    }
+  }, options.animation ? 5000 : 0);
 }
 
 function showOverview(){
-  if (randomInterval) {
-    clearInterval(randomInterval);
+  if (intervalTimer) {
+    clearInterval(intervalTimer);
   }
-  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(.3,.3)');
+  var scalingX;
+  switch (options.nrOfiFrames) {
+    case 1:
+      scalingX = "1";
+      break;
+    case 2:
+      scalingX =$(document).width() / ((2 * $(document).width()) + 50);
+      break;
+    default:
+      scalingX = ".325";
+  }
+  var scalingY = $(document).height() / (((Math.floor(options.nrOfiFrames / 3) + 1) * $(document).height()) + (Math.floor(options.nrOfiFrames / 3) * 50));
+  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale('+ scalingX +','+ scalingY +')');
 }
 
 function checkIfOptionsChanged(){
@@ -126,13 +138,14 @@ function loadOptions() {
   }
   var iFrameOptions = [];
   for (var idx = 0; idx < urls.length; idx++) {
+    var position = getPosition(idx, width, height);
     iFrameOptions[iFrameOptions.length] = {
       url: urls[idx].url,
       width: width,
       height: height,
       idx: idx,
-      x: getPosition(idx, width, height).x,
-      y: getPosition(idx, width, height).y
+      x: position.x,
+      y: position.y
     }
   }
   addIFrames(iFrameOptions);
@@ -142,16 +155,24 @@ $(function(){
   $(document).on('keyup',function(e){
     var next = 0;
     var keycode = e.which;
-    if (keycode > 48 && keycode < 58) {
-        next = keycode - 49;
-      if (next > options.nrOfiFrames) {
-        next = 0;
+    if (keycode > 48 && keycode < 58) {//1-9
+      next = keycode - 49;
+      if (next < options.nrOfiFrames) {
+        animate(next);
       }
-      animate(next);
-    }else if(keycode === 83){
-      options.animation = !options.animation;
-      if (randomInterval) clearInterval(randomInterval);
-    }else{
+    }else if(keycode === 83){//S
+      if(!options.animation){
+        options.animation = true;
+        intervalTimer = setInterval(function() {
+          animate(nextIframe);
+        }, options.duration);
+      } else {
+        if (intervalTimer) {
+          clearInterval(intervalTimer);
+        }
+        options.animation = false;
+      }
+    }else if (keycode === 48) {//0
       showOverview();
     }
   });
@@ -159,9 +180,9 @@ $(function(){
   if ('undefined' !== typeof localStorage["urls"]) {
     loadOptions();
     addCSSStyles();
-    randomInterval = setInterval(function(){
-      animate(0);
-    },options.duration);
+    intervalTimer = setInterval(function(){
+      animate(nextIframe);
+    }, options.duration);
   }else{
     document.location = chrome.extension.getURL("options/index.html");
   }
