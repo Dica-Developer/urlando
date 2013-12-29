@@ -175,10 +175,10 @@ $(function () {
           animate(nextIframe);
         }, options.duration);
       } else {
+        options.animation = false;
         if (intervalTimer) {
           clearInterval(intervalTimer);
         }
-        options.animation = false;
       }
     } else if (keycode === 48) { //0
       showOverview();
