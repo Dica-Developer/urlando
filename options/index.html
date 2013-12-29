@@ -11,83 +11,11 @@
     <link rel="stylesheet" href="css/main.css" />
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="../js/jquery.tmpl.min.js"></script>
-    <script type="text/javascript"src="../js/htmlTemplates.js"></script>
-    <script type="text/javascript">
-      function addUrl(){
-        var urlInputDiv = $.tmpl('optionUrls');
-        urlInputDiv.find('.minus').on('click',function(e){
-          $(this).parent().remove();
-        }).show();
-        urlInputDiv.find('.plus').on('click', function(){
-          addUrl();
-        });
-        urlInputDiv.appendTo('#urlSetup');
-      }
-      var saveOptions = function(){
-        var urlInputs = $('#urlSetup').find('input');
-        var resolution = $('#resolution').find(':selected').val();
-        var ratio= $('#ratio').find(':selected').val();
-        var reload = $('#reload').is(':checked');
-        var random = $('#random').is(':checked');
-        var duration = $('#duration').find(':selected').val();
-        var urls = [];
-        var options;
-        urlInputs.each(function(){
-          urls[urls.length] = {
-            url: $(this).val()
-          };
-        });
-        localStorage["urls"] = JSON.stringify(urls);
-        localStorage["options"] = JSON.stringify({resolution: resolution, ratio: ratio,reload:reload,duration:duration, random:random, changed:true});
-      };
-      $(function(){
-        $('#resolution').on('change',function(){
-          if($(this).val() === 'full'){
-            $('#ratio').attr('disabled','disabled');
-          }else{
-            $('#ratio').attr('disabled',null);
-          }
-        });
-        $('#saveOptions').on('click', saveOptions);
-
-        var urlInputDiv;
-        if('undefined' !== typeof localStorage["urls"]){
-          var urls = JSON.parse(localStorage["urls"]);
-          for (var idx = 0; idx < urls.length; idx++) {
-            urlInputDiv = $.tmpl('optionUrls');
-            if(idx>0){
-              urlInputDiv.find('.minus').on('click',function(e){
-                $(this).parent().remove();
-              }).show();
-            }
-            urlInputDiv.find('.plus').on('click', function(){
-              addUrl();
-            });
-            urlInputDiv.find('.urlInput').val(urls[idx].url);
-            urlInputDiv.appendTo('#urlSetup');
-          }
-        }else{
-          urlInputDiv = $.tmpl('optionUrls');
-          urlInputDiv.find('.plus').on('click', function(){
-            addUrl();
-          });
-          urlInputDiv.appendTo('#urlSetup');
-        }
-        if('undefined' !== typeof localStorage["options"]){
-          var options = JSON.parse(localStorage["options"]);
-          $('#resolution option[value="'+options.resolution+'"]').attr('selected',true).trigger('change');
-          $('#ratio option[value="'+options.ratio+'"]').attr('selected',true);
-          $('#duration option[value="'+options.duration+'"]').attr('selected',true);
-          var reload = $('#reload');
-          options.reload ? reload.attr('checked','checked') : reload.attr('checked',null);
-          var random = $('#random');
-          options.random ? random.attr('checked','checked') : random.attr('checked',null);
-        }
-      });
-    </script>
+    <script type="text/javascript" src="../js/htmlTemplates.js"></script>
+    <script type="text/javascript" src="js/options.js"></script>
   </head>
   <body>
-    <h1>Set url s to display</h1>
+    <h1>Set URLs to display</h1>
     <dl>
       <dt>
         <label for="resolution">Resolution:</label>
@@ -135,6 +63,6 @@
       </dd>
     </dl>
     <div id="urlSetup"></div>
-    <div id="saveOptions">Save</div>
+    <input type="button" id="saveOptions" value="Save" />
   </body>
 </html>
