@@ -2,17 +2,15 @@
 <html>
   <head>
     <title>Urlando Options</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/chrome_shared.css" />
-    <link rel="stylesheet" href="css/browser.css" />
-    <link rel="stylesheet" href="css/checkbox.css" />
-    <link rel="stylesheet" href="css/button.css" />
-    <link rel="stylesheet" href="css/select.css" />
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/chrome_shared.css" />
+    <link rel="stylesheet" href="../css/browser.css" />
+    <link rel="stylesheet" href="../css/checkbox.css" />
+    <link rel="stylesheet" href="../css/button.css" />
+    <link rel="stylesheet" href="../css/select.css" />
+    <link rel="stylesheet" href="../css/options.css" />
     <script type="text/javascript" src="../js/jquery.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.tmpl.min.js"></script>
-    <script type="text/javascript" src="../js/htmlTemplates.js"></script>
-    <script type="text/javascript" src="js/options.js"></script>
+    <script type="text/javascript" src="../js/options.js"></script>
   </head>
   <body>
     <h1>Set URLs to display</h1>
@@ -23,16 +21,16 @@
       <dd>
         <select id="resolution">
           <option value="640">640</option>
-          <option value="800" selected="selected">800</option>
+          <option value="800">800</option>
           <option value="1024">1024</option>
-          <option value="full">Viewport</option>
+          <option value="full" selected="selected">Viewport</option>
         </select>
       </dd>
       <dt>
         <label for="ratio">Aspect Ratio:</label>
       </dt>
       <dd>
-        <select id="ratio">
+        <select id="ratio" disabled="disabled">
           <option value="4/3">4:3</option>
           <option value="16/9" selected="selected">16:9</option>
         </select>
@@ -64,5 +62,6 @@
     </dl>
     <div id="urlSetup"></div>
     <input type="button" id="saveOptions" value="Save" />
+    <input type="button" id="updateOptions" value="Update" />
   </body>
 </html>

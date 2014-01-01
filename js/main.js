@@ -1,27 +1,32 @@
-/*global localStorage, window, chrome*/
+/*global window, chrome*/
 var intervalTimer = null;
 var nextIframe = 0;
 var options = {
   reload: false,
   nrOfiFrames: 0,
   duration: 10000,
-  resolution: 0,
+  resolution: 'full',
   ratio: 0,
   random: false,
   animation: true
 };
-
-function setOptions(storedOptions, urlsLength) {
-  options.reload = storedOptions.reload;
-  options.nrOfiFrames = urlsLength;
-  options.duration = parseInt(storedOptions.duration, 10) * 1000;
-  options.resolution = storedOptions.resolution;
-  options.ratio = storedOptions.ratio;
-}
+var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" src="${url}" style="width:${width}px; height:${height}px;"></webview></div>';
 
 function addIFrames(urls) {
-  $('#iframes').html('');
-  $.tmpl('iFrame', urls).appendTo('#iFrames');
+  var i = 0;
+  $('#iFrames').remove();
+  $('<div id="iFrames"></div>').appendTo('body');
+  for (i = 0; i < urls.length; i++) {
+    var iFrameMarkup = iFrameMarkupTemplate;
+    iFrameMarkup = iFrameMarkup.replace('${url}', urls[i].url);
+    iFrameMarkup = iFrameMarkup.replace('${idx}', urls[i].idx);
+    iFrameMarkup = iFrameMarkup.replace('${idx}', urls[i].idx);
+    iFrameMarkup = iFrameMarkup.replace('${x}', urls[i].x);
+    iFrameMarkup = iFrameMarkup.replace('${y}', urls[i].y);
+    iFrameMarkup = iFrameMarkup.replace('${width}', urls[i].width);
+    iFrameMarkup = iFrameMarkup.replace('${height}', urls[i].height);
+    $(iFrameMarkup).appendTo('#iFrames');
+  }
 }
 
 function getHeight(resolution, ratio) {
@@ -30,8 +35,8 @@ function getHeight(resolution, ratio) {
 
 function getPosition(idx, width, height) {
   var position = {};
-  position.x = ((idx % 3) * width) + ((idx % 3) * 50);
-  position.y = (Math.floor(idx / 3) * height) + (Math.floor(idx / 3) * 50);
+  position.x = (idx % 3) * width;
+  position.y = Math.floor(idx / 3) * height;
   return position;
 }
 
@@ -77,30 +82,32 @@ function previousPosition() {
   return nextIframe;
 }
 
-function checkIfOptionsChanged() {
-  var options = JSON.parse(localStorage.options);
-  if (options.changed) {
-    options.changed = false;
-    localStorage.options = JSON.stringify(options);
-    window.location.reload();
+function translateToNextFrame() {
+  var scalingX;
+  switch (options.nrOfiFrames) {
+  case 1:
+    scalingX = 1;
+    break;
+  case 2:
+    scalingX = 1 / 2;
+    break;
+  default:
+    scalingX = 1 / 3;
   }
+  var scalingY = 1 / Math.ceil(options.nrOfiFrames / 3);
+  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(' + scalingX + ',' + scalingY + ')');
+}
+
+function showOverview() {
+  if (intervalTimer) {
+    clearInterval(intervalTimer);
+  }
+  translateToNextFrame();
 }
 
 function animate(iframe) {
   checkIfOptionsChanged();
-  var scalingX;
-  switch (options.nrOfiFrames) {
-  case 1:
-    scalingX = "1";
-    break;
-  case 2:
-    scalingX = $(document).width() / ((2 * $(document).width()) + 50);
-    break;
-  default:
-    scalingX = ".325";
-  }
-  var scalingY = $(document).height() / (((Math.ceil(options.nrOfiFrames / 3)) * $(document).height()) + (Math.floor(options.nrOfiFrames / 3) * 50));
-  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(' + scalingX + ',' + scalingY + ')');
+  translateToNextFrame();
   setTimeout(function () {
     var framePosition = getFramePosition(iframe);
     $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
@@ -112,51 +119,78 @@ function animate(iframe) {
   }, options.animation ? 5000 : 0);
 }
 
-function showOverview() {
-  if (intervalTimer) {
-    clearInterval(intervalTimer);
-  }
-  var scalingX;
-  switch (options.nrOfiFrames) {
-  case 1:
-    scalingX = "1";
-    break;
-  case 2:
-    scalingX = $(document).width() / ((2 * $(document).width()) + 50);
-    break;
-  default:
-    scalingX = ".325";
-  }
-  var scalingY = $(document).height() / (((Math.ceil(options.nrOfiFrames / 3)) * $(document).height()) + (Math.floor(options.nrOfiFrames / 3) * 50));
-  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(' + scalingX + ',' + scalingY + ')');
+function loadOptions() {
+  chrome.storage.local.get(function (items) {
+    if (!chrome.runtime.lastError) {
+      if (items.hasOwnProperty('urls')) {
+        var urls = JSON.parse(items.urls);
+        options.reload = items.reload;
+        options.nrOfiFrames = urls.length;
+        options.duration = parseInt(items.duration, 10) * 1000;
+        options.resolution = items.resolution;
+        options.ratio = items.ratio;
+        options.random = items.random;
+        var width = items.resolution;
+        var height;
+        var idx;
+        if (width !== 'full') {
+          height = getHeight(width, items.ratio);
+        } else {
+          width = $(document).width();
+          height = $(document).height();
+        }
+        var iFrameOptions = [];
+        var position;
+        for (idx = 0; idx < urls.length; idx++) {
+          position = getPosition(idx, width, height);
+          iFrameOptions[iFrameOptions.length] = {
+            url: urls[idx].url,
+            width: width,
+            height: height,
+            idx: idx,
+            x: position.x,
+            y: position.y
+          };
+        }
+        addIFrames(iFrameOptions);
+
+        // TODO throw an event here!
+        addCSSStyles();
+        if (intervalTimer) {
+          clearInterval(intervalTimer);
+        }
+        intervalTimer = setInterval(function () {
+          animate(nextIframe);
+        }, options.duration);
+      } else {
+        // TODO throw an event here!
+        chrome.app.window.create("../view/options.html", {
+          "bounds": {
+            "width": 684,
+            "height": 481
+          }
+        });
+      }
+    } else {
+      console.error(chrome.runtime.lastError);
+    }
+  });
 }
 
-function loadOptions() {
-  var urls = JSON.parse(localStorage.urls);
-  setOptions(JSON.parse(localStorage.options), urls.length);
-  var width = options.resolution;
-  var height;
-  var idx;
-  if (width !== 'full') {
-    height = getHeight(width, options.ratio);
-  } else {
-    width = $(document).width();
-    height = $(document).height();
-  }
-  var iFrameOptions = [];
-  var position;
-  for (idx = 0; idx < urls.length; idx++) {
-    position = getPosition(idx, width, height);
-    iFrameOptions[iFrameOptions.length] = {
-      url: urls[idx].url,
-      width: width,
-      height: height,
-      idx: idx,
-      x: position.x,
-      y: position.y
-    };
-  }
-  addIFrames(iFrameOptions);
+function checkIfOptionsChanged() {
+  chrome.storage.local.get(function (items) {
+    if (!chrome.runtime.lastError) {
+      if (items.hasOwnProperty('changed') && items.changed) {
+        items.changed = false;
+        chrome.storage.local.set({
+          'changed': false
+        });
+        loadOptions();
+      }
+    } else {
+      console.error(chrome.runtime.lastError);
+    }
+  });
 }
 
 $(function () {
@@ -182,16 +216,15 @@ $(function () {
       }
     } else if (keycode === 48) { //0
       showOverview();
+    } else if (keycode === 79) { //O
+      chrome.app.window.create("../view/options.html", {
+        "bounds": {
+          "width": 684,
+          "height": 481
+        }
+      });
     }
   });
 
-  if ('undefined' !== typeof localStorage.urls) {
-    loadOptions();
-    addCSSStyles();
-    intervalTimer = setInterval(function () {
-      animate(nextIframe);
-    }, options.duration);
-  } else {
-    document.location = chrome.extension.getURL("options/index.html");
-  }
+  loadOptions();
 });

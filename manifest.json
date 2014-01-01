@@ -1,7 +1,9 @@
 {
   "manifest_version": 2,
+  "short_name": "urlando",
   "name": "Urlando",
-  "version": "0.5",
+  "version": "0.6",
+  "author": "Dica-Developer",
   "description": "Cycles through user defined URLs in user defined intervals. Useful as dashboard / wallboard.",
   "icons": {
     "128": "icon128.png",
@@ -9,11 +11,15 @@
     "16": "icon16.png"
   },
   "app": {
-    "launch": {
-      "local_path": "main.html",
-      "container": "tab"
+    "background": {
+      "scripts": [
+        "js/background.js"
+      ]
     }
   },
-  "options_page": "options/index.html",
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self' 'unsafe-eval';"
+  "offline_enabled": true,
+  "permissions": [
+    "storage",
+    "webview"
+  ]
 }
