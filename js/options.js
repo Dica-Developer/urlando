@@ -71,7 +71,7 @@ $(function () {
   var urlInputDiv;
   var idx;
   chrome.storage.local.get(function (options) {
-    if (options.hasOwnProperty('urls')) {
+    if (options.hasOwnProperty('urls') && options.urls.length > 4) {
       var urls = JSON.parse(options.urls);
       for (idx = 0; idx < urls.length; idx++) {
         urlInputDiv = $(optionUrlMarkupTemplate);
