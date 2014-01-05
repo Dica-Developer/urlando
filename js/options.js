@@ -13,7 +13,7 @@ function addUrl() {
   urlInputDiv.appendTo('#urlSetup');
 }
 
-var saveOptions = function() {
+var saveOptions = function () {
   updateOptions();
   chrome.app.window.current().close();
 };
@@ -32,7 +32,6 @@ var updateOptions = function () {
     };
   });
   var options = {
-    urls: JSON.stringify(urls),
     resolution: resolution,
     ratio: ratio,
     reload: reload,
@@ -40,6 +39,11 @@ var updateOptions = function () {
     random: random,
     changed: true
   };
+  if (urls.length > 0) {
+    options.urls = JSON.stringify(urls);
+  } else {
+    chrome.storage.local.remove('urls');
+  }
   chrome.storage.local.set(options, function () {
     if (chrome.runtime.lastError) {
       console.error(chrome.runtime.lastError);
