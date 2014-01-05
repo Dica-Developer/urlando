@@ -30,3 +30,8 @@ dt {
 .urlInputDiv {
     height: 35px;
 }
+
+.urlContainer {
+    height: 200px;
+    overflow: scroll;
+}
