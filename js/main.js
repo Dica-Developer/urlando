@@ -10,7 +10,7 @@ var options = {
   random: false,
   animation: true
 };
-var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" src="${url}" style="width:${width}px; height:${height}px;"></webview></div>';
+var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" data-url="${url}" src="${url}" style="width:${width}px; height:${height}px;"></webview></div>';
 
 function displayStatus(status) {
   $('<div id="statusMessage" class="statusMessage">' + status + '</div>').appendTo('body');
@@ -31,6 +31,7 @@ function addIFrames(urls) {
   $('<div id="iFrames"></div>').appendTo('body');
   for (i = 0; i < urls.length; i++) {
     var iFrameMarkup = iFrameMarkupTemplate;
+    iFrameMarkup = iFrameMarkup.replace('${url}', urls[i].url);
     iFrameMarkup = iFrameMarkup.replace('${url}', urls[i].url);
     iFrameMarkup = iFrameMarkup.replace('${idx}', urls[i].idx);
     iFrameMarkup = iFrameMarkup.replace('${idx}', urls[i].idx);
@@ -126,8 +127,8 @@ function animate(iframe) {
     $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
     nextIframe = nextPosition();
     if (options.reload) {
-      var src = $('#iFrame_' + nextIframe).attr('src');
-      $('#iFrame_' + nextIframe).attr('src', src);
+      var url = $('#iFrame_' + nextIframe).data('url');
+      $('#iFrame_' + nextIframe).attr('src', url);
     }
   }, options.animation ? 5000 : 0);
 }
