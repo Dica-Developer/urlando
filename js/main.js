@@ -1,4 +1,4 @@
-/*global window, chrome*/
+/*global window, chrome, Mousetrap*/
 var intervalTimer = null;
 var nextIframe = 0;
 var options = {
@@ -193,38 +193,61 @@ function checkIfOptionsChanged() {
   });
 }
 
+function nextFrame(frame) {
+  if (frame < options.nrOfiFrames) {
+    animate(frame);
+  }
+}
+
 $(function () {
-  $(document).on('keyup', function (e) {
-    var next = 0;
-    var keycode = e.which;
-    if (keycode > 48 && keycode < 58) { //1-9
-      next = keycode - 49;
-      if (next < options.nrOfiFrames) {
-        animate(next);
+  Mousetrap.bind('o', function () {
+    chrome.app.window.create("../view/options.html", {
+      "bounds": {
+        "width": 684,
+        "height": 481
       }
-    } else if (keycode === 83) { //S
-      if (!options.animation) {
-        options.animation = true;
-        intervalTimer = setInterval(function () {
-          animate(nextIframe);
-        }, options.duration);
-      } else {
-        options.animation = false;
-        if (intervalTimer) {
-          clearInterval(intervalTimer);
-        }
+    });
+  });
+  Mousetrap.bind('s', function () {
+    if (!options.animation) {
+      options.animation = true;
+      intervalTimer = setInterval(function () {
+        animate(nextIframe);
+      }, options.duration);
+    } else {
+      options.animation = false;
+      if (intervalTimer) {
+        clearInterval(intervalTimer);
       }
-    } else if (keycode === 48) { //0
-      showOverview();
-    } else if (keycode === 79) { //O
-      chrome.app.window.create("../view/options.html", {
-        "bounds": {
-          "width": 684,
-          "height": 481
-        }
-      });
     }
   });
-
+  Mousetrap.bind('0', showOverview);
+  Mousetrap.bind('1', function () {
+    nextFrame(0);
+  });
+  Mousetrap.bind('2', function () {
+    nextFrame(1);
+  });
+  Mousetrap.bind('3', function () {
+    nextFrame(2);
+  });
+  Mousetrap.bind('4', function () {
+    nextFrame(3);
+  });
+  Mousetrap.bind('5', function () {
+    nextFrame(4);
+  });
+  Mousetrap.bind('6', function () {
+    nextFrame(5);
+  });
+  Mousetrap.bind('7', function () {
+    nextFrame(6);
+  });
+  Mousetrap.bind('8', function () {
+    nextFrame(7);
+  });
+  Mousetrap.bind('9', function () {
+    nextFrame(8);
+  });
   loadOptions();
 });
