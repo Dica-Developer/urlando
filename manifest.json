@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "short_name": "urlando",
   "name": "Urlando",
-  "version": "1.1",
+  "version": "1.2",
   "author": "Dica-Developer",
   "description": "Cycles through user defined URLs in user defined intervals. Useful as dashboard / wallboard.",
   "icons": {
