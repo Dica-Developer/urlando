@@ -120,7 +120,6 @@ function showOverview() {
 }
 
 function animate(iframe) {
-  checkIfOptionsChanged();
   translateToNextFrame();
   setTimeout(function () {
     var framePosition = getFramePosition(iframe);
@@ -191,22 +190,6 @@ function loadOptions() {
   });
 }
 
-function checkIfOptionsChanged() {
-  chrome.storage.local.get(function (items) {
-    if (!chrome.runtime.lastError) {
-      if (items.hasOwnProperty('changed') && items.changed) {
-        items.changed = false;
-        chrome.storage.local.set({
-          'changed': false
-        });
-        loadOptions();
-      }
-    } else {
-      console.error(chrome.runtime.lastError);
-    }
-  });
-}
-
 function nextFrame(frame) {
   if (frame < options.nrOfiFrames) {
     animate(frame);
@@ -214,6 +197,7 @@ function nextFrame(frame) {
 }
 
 $(function () {
+  chrome.runtime.onMessage.addListener(loadOptions);
   Mousetrap.bind('o', function () {
     chrome.app.window.create("../view/options.html", {
       "bounds": {

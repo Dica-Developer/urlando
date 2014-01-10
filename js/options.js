@@ -13,7 +13,7 @@ function addUrl() {
   urlInputDiv.appendTo('#urlSetup');
 }
 
-var updateOptions = function () {
+var updateOptions = function (successCallback) {
   var urlInputs = $('#urlSetup').find('input');
   var resolution = $('#resolution').find(':selected').val();
   var ratio = $('#ratio').find(':selected').val();
@@ -31,8 +31,7 @@ var updateOptions = function () {
     ratio: ratio,
     reload: reload,
     duration: duration,
-    random: random,
-    changed: true
+    random: random
   };
   if (urls.length > 0) {
     options.urls = JSON.stringify(urls);
@@ -44,13 +43,18 @@ var updateOptions = function () {
       console.error(chrome.runtime.lastError);
     } else {
       console.info('Options saved successfully.');
+      chrome.runtime.sendMessage('options.updated');
+      if (successCallback) {
+        successCallback();
+      }
     }
   });
 };
 
 var saveOptions = function () {
-  updateOptions();
-  chrome.app.window.current().close();
+  updateOptions(function () {
+    chrome.app.window.current().close();
+  });
 };
 
 function removeClick() {
