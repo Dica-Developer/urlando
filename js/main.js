@@ -12,6 +12,19 @@ var options = {
 };
 var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" src="${url}" style="width:${width}px; height:${height}px;"></webview></div>';
 
+function displayStatus(status) {
+  $('<div id="statusMessage" class="statusMessage">' + status + '</div>').appendTo('body');
+  $('#statusMessage').animate({
+    opacity: 1
+  }, 1250, 'swing', function () {
+    $('#statusMessage').animate({
+      opacity: 0
+    }, 1250, 'swing', function () {
+      $('#statusMessage').remove();
+    });
+  });
+}
+
 function addIFrames(urls) {
   var i = 0;
   $('#iFrames').remove();
@@ -214,11 +227,13 @@ $(function () {
       intervalTimer = setInterval(function () {
         animate(nextIframe);
       }, options.duration);
+      displayStatus('animation started');
     } else {
       options.animation = false;
       if (intervalTimer) {
         clearInterval(intervalTimer);
       }
+      displayStatus('animation paused');
     }
   });
   Mousetrap.bind('0', showOverview);

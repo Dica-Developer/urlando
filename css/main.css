@@ -13,3 +13,14 @@ body {
 .iFrames {
   position: absolute;
 }
+
+#statusMessage {
+  font-size: 12em;
+  color: black;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: calc((100% / 2) - 6rem);
+  position: absolute;
+}
