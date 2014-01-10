@@ -1,4 +1,4 @@
-/*global chrome*/
+/*global chrome, Mousetrap*/
 
 var optionUrlMarkupTemplate = '<div class="urlInputDiv"><input type="text" size="75" class="urlInput"><div class="plus addRemoveIcons"></div><div class="minus addRemoveIcons"></div></div>';
 
@@ -12,11 +12,6 @@ function addUrl() {
   });
   urlInputDiv.appendTo('#urlSetup');
 }
-
-var saveOptions = function () {
-  updateOptions();
-  chrome.app.window.current().close();
-};
 
 var updateOptions = function () {
   var urlInputs = $('#urlSetup').find('input');
@@ -53,11 +48,19 @@ var updateOptions = function () {
   });
 };
 
+var saveOptions = function () {
+  updateOptions();
+  chrome.app.window.current().close();
+};
+
 function removeClick() {
   $(this).parent().remove();
 }
 
 $(function () {
+  Mousetrap.bind('esc', function () {
+    chrome.app.window.current().close();
+  });
   $('#resolution').on('change', function () {
     if ($(this).val() === 'full') {
       $('#ratio').attr('disabled', 'disabled');
