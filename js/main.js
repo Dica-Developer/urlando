@@ -10,6 +10,7 @@ var options = {
   random: false,
   animation: true
 };
+var overviewMode = false;
 var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" data-url="${url}" src="${url}" style="width:${width}px; height:${height}px;"></webview></div>';
 
 function displayStatus(status) {
@@ -113,23 +114,31 @@ function translateToNextFrame() {
 }
 
 function showOverview() {
-  if (intervalTimer) {
-    clearInterval(intervalTimer);
-  }
+  overviewMode = true;
   translateToNextFrame();
 }
 
 function animate(iframe) {
-  translateToNextFrame();
-  setTimeout(function () {
-    var framePosition = getFramePosition(iframe);
-    $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
-    nextIframe = nextPosition();
-    if (options.reload) {
-      var url = $('#iFrame_' + nextIframe).data('url');
-      $('#iFrame_' + nextIframe).attr('src', url);
-    }
-  }, options.animation ? 5000 : 0);
+  if (overviewMode) {
+    setTimeout(function () {
+      nextIframe = nextPosition();
+      if (options.reload) {
+        var url = $('#iFrame_' + nextIframe).data('url');
+        $('#iFrame_' + nextIframe).attr('src', url);
+      }
+    }, options.animation ? 5000 : 0);
+  } else {
+    translateToNextFrame();
+    setTimeout(function () {
+      var framePosition = getFramePosition(iframe);
+      $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
+      nextIframe = nextPosition();
+      if (options.reload) {
+        var url = $('#iFrame_' + nextIframe).data('url');
+        $('#iFrame_' + nextIframe).attr('src', url);
+      }
+    }, options.animation ? 5000 : 0);
+  }
 }
 
 function loadOptions() {
@@ -191,6 +200,7 @@ function loadOptions() {
 }
 
 function nextFrame(frame) {
+  overviewMode = false;
   if (frame < options.nrOfiFrames) {
     animate(frame);
   }
