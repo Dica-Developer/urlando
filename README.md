@@ -11,4 +11,5 @@ Available in the <a href="https://chrome.google.com/webstore/detail/urlando/cfbo
 <tr><td>1-9</td><td>jump to the URL with the specified index</td></tr>
 <tr><td>s</td><td>start/stop animation</td></tr>
 <tr><td>o</td><td>open options</td></tr>
+<tr><td>esc</td><td>closes options without save</td></tr>
 </table>
