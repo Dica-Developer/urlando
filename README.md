@@ -1,7 +1,7 @@
 # Urlando #
 
 Chrome extension to cycle through user defined URLs in user defined intervals. Useful as dashboard / wallboard.
-Available in the <a href="https://chrome.google.com/webstore/detail/urlando/cfboahihglghleeihjpbfiiokjdnfkjk">Chrome webstore</a>.
+Available in the <a href="https://chrome.google.com/webstore/detail/urlando/eppclhggepnfkndcimahbfboeefimjfb">Chrome webstore</a>.
 
 ## Shortcuts ##
 
