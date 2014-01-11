@@ -16,7 +16,7 @@ body {
 
 #statusMessage {
   font-size: 12em;
-  color: black;
+  color: #bbbbbb;
   opacity: 0;
   width: 100%;
   height: 100%;
