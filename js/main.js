@@ -28,10 +28,11 @@ function displayStatus(status) {
 
 function addIFrames(urls) {
   var i = 0;
+  var iFrameMarkup;
   $('#iFrames').remove();
   $('<div id="iFrames"></div>').appendTo('body');
   for (i = 0; i < urls.length; i++) {
-    var iFrameMarkup = iFrameMarkupTemplate;
+    iFrameMarkup = iFrameMarkupTemplate;
     iFrameMarkup = iFrameMarkup.replace('${url}', urls[i].url);
     iFrameMarkup = iFrameMarkup.replace('${url}', urls[i].url);
     iFrameMarkup = iFrameMarkup.replace('${idx}', urls[i].idx);
