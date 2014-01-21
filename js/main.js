@@ -209,7 +209,7 @@ function nextFrame(frame) {
 
 $(function () {
   chrome.runtime.onMessage.addListener(loadOptions);
-  Mousetrap.bind('o', function () {
+  Mousetrap.bind('mod+o', function () {
     chrome.app.window.create("../view/options.html", {
       "bounds": {
         "width": 684,
@@ -217,7 +217,7 @@ $(function () {
       }
     });
   });
-  Mousetrap.bind('s', function () {
+  Mousetrap.bind('mod+s', function () {
     if (!options.animation) {
       options.animation = true;
       intervalTimer = setInterval(function () {
@@ -232,32 +232,32 @@ $(function () {
       displayStatus('animation paused');
     }
   });
-  Mousetrap.bind('0', showOverview);
-  Mousetrap.bind('1', function () {
+  Mousetrap.bind('mod+0', showOverview);
+  Mousetrap.bind('mod+1', function () {
     nextFrame(0);
   });
-  Mousetrap.bind('2', function () {
+  Mousetrap.bind('mod+2', function () {
     nextFrame(1);
   });
-  Mousetrap.bind('3', function () {
+  Mousetrap.bind('mod+3', function () {
     nextFrame(2);
   });
-  Mousetrap.bind('4', function () {
+  Mousetrap.bind('mod+4', function () {
     nextFrame(3);
   });
-  Mousetrap.bind('5', function () {
+  Mousetrap.bind('mod+5', function () {
     nextFrame(4);
   });
-  Mousetrap.bind('6', function () {
+  Mousetrap.bind('mod+6', function () {
     nextFrame(5);
   });
-  Mousetrap.bind('7', function () {
+  Mousetrap.bind('mod+7', function () {
     nextFrame(6);
   });
-  Mousetrap.bind('8', function () {
+  Mousetrap.bind('mod+8', function () {
     nextFrame(7);
   });
-  Mousetrap.bind('9', function () {
+  Mousetrap.bind('mod+9', function () {
     nextFrame(8);
   });
   loadOptions();
