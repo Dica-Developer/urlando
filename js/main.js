@@ -11,7 +11,7 @@ var options = {
   animation: true
 };
 var overviewMode = false;
-var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" data-url="${url}" src="${url}" style="width:${width}px; height:${height}px;"></webview><div class="customPageTitle">ok custom page title</div></div>';
+var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" data-url="${url}" src="${url}" style="width:${width}px; height:${height}px;"></webview>${customPageTitle}</div>';
 
 function displayStatus(status) {
   $('<div id="statusMessage" class="statusMessage">' + status + '</div>').appendTo('body');
@@ -33,14 +33,15 @@ function addIFrames(urls) {
   $('<div id="iFrames"></div>').appendTo('body');
   for (i = 0; i < urls.length; i++) {
     iFrameMarkup = iFrameMarkupTemplate;
-    iFrameMarkup = iFrameMarkup.replace('${url}', urls[i].url);
-    iFrameMarkup = iFrameMarkup.replace('${url}', urls[i].url);
+    iFrameMarkup = iFrameMarkup.replace('${url}', urls[i].url.url);
+    iFrameMarkup = iFrameMarkup.replace('${url}', urls[i].url.url);
     iFrameMarkup = iFrameMarkup.replace('${idx}', urls[i].idx);
     iFrameMarkup = iFrameMarkup.replace('${idx}', urls[i].idx);
     iFrameMarkup = iFrameMarkup.replace('${x}', urls[i].x);
     iFrameMarkup = iFrameMarkup.replace('${y}', urls[i].y);
     iFrameMarkup = iFrameMarkup.replace('${width}', urls[i].width);
     iFrameMarkup = iFrameMarkup.replace('${height}', urls[i].height);
+    iFrameMarkup = iFrameMarkup.replace('${customPageTitle}', '<div class="customPageTitle">' + urls[i].url.title + '</div>');
     $(iFrameMarkup).appendTo('#iFrames');
   }
 }
@@ -57,7 +58,7 @@ function getPosition(idx, width, height) {
 }
 
 function addCSSStyles() {
-  $('.iFrames').each(function () {
+  $('.iFrames').each(function() {
     var x = $(this).data('x');
     var y = $(this).data('y');
     $(this).css('-webkit-transform', 'translate(' + x + 'px,' + y + 'px)');
@@ -101,14 +102,14 @@ function previousPosition() {
 function translateToNextFrame() {
   var scalingX;
   switch (options.nrOfiFrames) {
-  case 1:
-    scalingX = 1;
-    break;
-  case 2:
-    scalingX = 1 / 2;
-    break;
-  default:
-    scalingX = 1 / 3;
+    case 1:
+      scalingX = 1;
+      break;
+    case 2:
+      scalingX = 1 / 2;
+      break;
+    default:
+      scalingX = 1 / 3;
   }
   var scalingY = 1 / Math.ceil(options.nrOfiFrames / 3);
   $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(' + scalingX + ',' + scalingY + ')');
@@ -121,7 +122,7 @@ function showOverview() {
 
 function animate(iframe) {
   if (overviewMode) {
-    setTimeout(function () {
+    setTimeout(function() {
       nextIframe = nextPosition();
       if (options.reload) {
         var url = $('#iFrame_' + nextIframe).data('url');
@@ -130,7 +131,7 @@ function animate(iframe) {
     }, options.animation ? 5000 : 0);
   } else {
     translateToNextFrame();
-    setTimeout(function () {
+    setTimeout(function() {
       var framePosition = getFramePosition(iframe);
       $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
       nextIframe = nextPosition();
@@ -143,7 +144,7 @@ function animate(iframe) {
 }
 
 function loadOptions() {
-  chrome.storage.local.get(function (items) {
+  chrome.storage.local.get(function(items) {
     if (!chrome.runtime.lastError) {
       if (items.hasOwnProperty('urls')) {
         var urls = JSON.parse(items.urls);
@@ -167,7 +168,7 @@ function loadOptions() {
         for (idx = 0; idx < urls.length; idx++) {
           position = getPosition(idx, width, height);
           iFrameOptions[iFrameOptions.length] = {
-            url: urls[idx].url,
+            url: urls[idx],
             width: width,
             height: height,
             idx: idx,
@@ -182,7 +183,7 @@ function loadOptions() {
         if (intervalTimer) {
           clearInterval(intervalTimer);
         }
-        intervalTimer = setInterval(function () {
+        intervalTimer = setInterval(function() {
           animate(nextIframe);
         }, options.duration);
       } else {
@@ -207,9 +208,9 @@ function nextFrame(frame) {
   }
 }
 
-$(function () {
+$(function() {
   chrome.runtime.onMessage.addListener(loadOptions);
-  Mousetrap.bind('mod+o', function () {
+  Mousetrap.bind('mod+o', function() {
     chrome.app.window.create("../view/options.html", {
       "bounds": {
         "width": 684,
@@ -217,10 +218,10 @@ $(function () {
       }
     });
   });
-  Mousetrap.bind('mod+s', function () {
+  Mousetrap.bind('mod+s', function() {
     if (!options.animation) {
       options.animation = true;
-      intervalTimer = setInterval(function () {
+      intervalTimer = setInterval(function() {
         animate(nextIframe);
       }, options.duration);
       displayStatus('animation started');
@@ -233,31 +234,31 @@ $(function () {
     }
   });
   Mousetrap.bind('mod+0', showOverview);
-  Mousetrap.bind('mod+1', function () {
+  Mousetrap.bind('mod+1', function() {
     nextFrame(0);
   });
-  Mousetrap.bind('mod+2', function () {
+  Mousetrap.bind('mod+2', function() {
     nextFrame(1);
   });
-  Mousetrap.bind('mod+3', function () {
+  Mousetrap.bind('mod+3', function() {
     nextFrame(2);
   });
-  Mousetrap.bind('mod+4', function () {
+  Mousetrap.bind('mod+4', function() {
     nextFrame(3);
   });
-  Mousetrap.bind('mod+5', function () {
+  Mousetrap.bind('mod+5', function() {
     nextFrame(4);
   });
-  Mousetrap.bind('mod+6', function () {
+  Mousetrap.bind('mod+6', function() {
     nextFrame(5);
   });
-  Mousetrap.bind('mod+7', function () {
+  Mousetrap.bind('mod+7', function() {
     nextFrame(6);
   });
-  Mousetrap.bind('mod+8', function () {
+  Mousetrap.bind('mod+8', function() {
     nextFrame(7);
   });
-  Mousetrap.bind('mod+9', function () {
+  Mousetrap.bind('mod+9', function() {
     nextFrame(8);
   });
   loadOptions();

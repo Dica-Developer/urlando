@@ -1,6 +1,6 @@
 /*global chrome, Mousetrap*/
 
-var optionUrlMarkupTemplate = '<div class="urlInputDiv"><input type="text" size="75" class="urlInput"><div class="plus addRemoveIcons"></div><div class="minus addRemoveIcons"></div></div>';
+var optionUrlMarkupTemplate = '<div class="urlInputDiv"><input type="text" size="75" class="urlInput"><div class="plus addRemoveIcons"></div><div class="minus addRemoveIcons"></div><button id="addTitleButton">Add Page Title</button><input class="titleInput"></input></div>';
 
 function addUrl() {
   var urlInputDiv = $(optionUrlMarkupTemplate);
@@ -13,18 +13,28 @@ function addUrl() {
   urlInputDiv.appendTo('#urlSetup');
 }
 
-var updateOptions = function (successCallback) {
-  var urlInputs = $('#urlSetup').find('input');
+function addTitle(event) {
+  var urlInputDiv = $(event.currentTarget).parent();
+  var titleInputDiv = urlInputDiv.find('.titleInput');
+  titleInputDiv.show()
+}
+
+var updateOptions = function(successCallback) {
   var resolution = $('#resolution').find(':selected').val();
   var ratio = $('#ratio').find(':selected').val();
   var reload = $('#reload').is(':checked');
   var random = $('#random').is(':checked');
   var duration = $('#duration').find(':selected').val();
   var urls = [];
-  urlInputs.each(function () {
+  $('.urlInput').each(function() {
     urls[urls.length] = {
       url: $(this).val()
     };
+  });
+  var index = 0;
+  $('.titleInput').each(function() {
+    urls[index].title = $(this).val();
+    index++;
   });
   var options = {
     resolution: resolution,
@@ -87,13 +97,13 @@ $(function () {
         }
         urlInputDiv.find('.plus').on('click', addUrl);
         urlInputDiv.find('.urlInput').val(urls[idx].url);
+        urlInputDiv.find('.titleInput').val(urls[idx].title);
+        urlInputDiv.find('#addTitleButton').on('click', addTitle);
         urlInputDiv.appendTo('#urlSetup');
       }
     } else {
       urlInputDiv = $(optionUrlMarkupTemplate);
-      urlInputDiv.find('.plus').on('click', function () {
-        addUrl();
-      });
+      urlInputDiv.find('.plus').on('click', addUrl);
       urlInputDiv.appendTo('#urlSetup');
     }
     if (options.hasOwnProperty('ratio')) {

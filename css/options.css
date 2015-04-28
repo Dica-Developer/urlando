@@ -38,3 +38,7 @@ dt {
     border-style: solid;
     border-color: #bbbbbb;
 }
+
+.titleInput {
+    display: none;
+}
