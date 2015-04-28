@@ -11,16 +11,16 @@ var options = {
   animation: true
 };
 var overviewMode = false;
-var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" data-url="${url}" src="${url}" style="width:${width}px; height:${height}px;"></webview></div>';
+var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" data-url="${url}" src="${url}" style="width:${width}px; height:${height}px;"></webview><div class="customPageTitle">ok custom page title</div></div>';
 
 function displayStatus(status) {
   $('<div id="statusMessage" class="statusMessage">' + status + '</div>').appendTo('body');
   $('#statusMessage').animate({
     opacity: 1
-  }, 1250, 'swing', function () {
+  }, 1250, 'swing', function() {
     $('#statusMessage').animate({
       opacity: 0
-    }, 1250, 'swing', function () {
+    }, 1250, 'swing', function() {
       $('#statusMessage').remove();
     });
   });

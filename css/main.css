@@ -27,3 +27,15 @@ body {
   position: absolute;
   text-align: center;
 }
+
+.customPageTitle {
+  font-size: 3em;
+  color: #bbbbbb;
+  opacity: 0.5;
+  width: 100%;
+  background-color: black;
+  left: 0;
+  top: 0;
+  position: absolute;
+  text-align: center;
+}
