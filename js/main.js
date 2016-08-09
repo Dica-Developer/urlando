@@ -8,7 +8,8 @@ var options = {
   resolution: 'full',
   ratio: 0,
   random: false,
-  animation: true
+  animation: true,
+  chromeScalingFix: false
 };
 var overviewMode = false;
 var iFrameMarkupTemplate = '<div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}"><webview id="iFrame_${idx}" data-url="${url}" src="${url}" style="width:${width}px; height:${height}px;"></webview></div>';
@@ -64,6 +65,14 @@ function addCSSStyles() {
   });
 }
 
+function addCSSStylesWithScaleFix() {
+  $('.iFrames').each(function () {
+    var x = $(this).data('x');
+    var y = $(this).data('y');
+    $(this).css('-webkit-transform', 'translate(' + (x + 946) + 'px,' + (y + 330) + 'px) scale(1.74, 1.41)');
+  });
+}
+
 function getFramePosition(iframe) {
   var nextiFrame = $('#iFrame_' + iframe).parent();
   var x = nextiFrame.data('x');
@@ -112,6 +121,9 @@ function translateToNextFrame() {
   }
   var scalingY = 1 / Math.ceil(options.nrOfiFrames / 3);
   $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(' + scalingX + ',' + scalingY + ')');
+  if (options.chromeScalingFix) {
+    addCSSStylesWithScaleFix();
+  }
 }
 
 function showOverview() {
@@ -133,6 +145,9 @@ function animate(iframe) {
     setTimeout(function () {
       var framePosition = getFramePosition(iframe);
       $('#iFrames').css('-webkit-transform', 'translate(' + -framePosition.x + 'px,' + -framePosition.y + 'px) scale(1,1)');
+      if (options.chromeScalingFix) {
+        addCSSStyles();
+      }
       nextIframe = nextPosition();
       if (options.reload) {
         var url = $('#iFrame_' + nextIframe).data('url');
@@ -153,6 +168,7 @@ function loadOptions() {
         options.resolution = items.resolution;
         options.ratio = items.ratio;
         options.random = items.random;
+        options.chromeScalingFix = items.chromeScalingFix;
         var width = items.resolution;
         var height;
         var idx;
@@ -178,7 +194,9 @@ function loadOptions() {
         addIFrames(iFrameOptions);
 
         // TODO throw an event here!
-        addCSSStyles();
+        if (!options.chromeScalingFix) {
+          addCSSStyles();
+        }
         if (intervalTimer) {
           clearInterval(intervalTimer);
         }
@@ -190,7 +208,7 @@ function loadOptions() {
         chrome.app.window.create("../view/options.html", {
           "bounds": {
             "width": 684,
-            "height": 481
+            "height": 500
           }
         });
       }
@@ -213,7 +231,7 @@ $(function () {
     chrome.app.window.create("../view/options.html", {
       "bounds": {
         "width": 684,
-        "height": 481
+        "height": 500
       }
     });
   });

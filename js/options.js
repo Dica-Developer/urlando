@@ -20,6 +20,7 @@ var updateOptions = function (successCallback) {
   var reload = $('#reload').is(':checked');
   var random = $('#random').is(':checked');
   var duration = $('#duration').find(':selected').val();
+  var chromeScalingFix = $('#chromeScalingFix').is(':checked');
   var urls = [];
   urlInputs.each(function () {
     urls[urls.length] = {
@@ -31,7 +32,8 @@ var updateOptions = function (successCallback) {
     ratio: ratio,
     reload: reload,
     duration: duration,
-    random: random
+    random: random,
+    chromeScalingFix: chromeScalingFix
   };
   if (urls.length > 0) {
     options.urls = JSON.stringify(urls);
@@ -95,6 +97,12 @@ $(function () {
         addUrl();
       });
       urlInputDiv.appendTo('#urlSetup');
+    }
+    var chromeScalingFix = $('#chromeScalingFix');
+    if (options.chromeScalingFix) {
+      chromeScalingFix.attr('checked', 'checked');
+    } else {
+      chromeScalingFix.attr('checked', null);
     }
     if (options.hasOwnProperty('ratio')) {
       $('#ratio option[value="' + options.ratio + '"]').attr('selected', true);
