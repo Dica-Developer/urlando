@@ -172,6 +172,7 @@ function loadOptions() {
         var width = items.resolution;
         var height;
         var idx;
+        $('#iFrames').remove();
         if (width !== 'full') {
           height = getHeight(width, items.ratio);
         } else {
@@ -208,7 +209,7 @@ function loadOptions() {
         chrome.app.window.create("../view/options.html", {
           "bounds": {
             "width": 684,
-            "height": 500
+            "height": 550
           }
         });
       }
@@ -231,7 +232,7 @@ $(function () {
     chrome.app.window.create("../view/options.html", {
       "bounds": {
         "width": 684,
-        "height": 500
+        "height": 550
       }
     });
   });
