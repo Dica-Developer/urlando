@@ -73,7 +73,7 @@ function addCSSStyles() {
         const elem = $(this);
         const { x, y}  = elem.data();
 
-        elem.css('-webkit-transform', `translate(${x}px, ${y}px)`);
+        elem.css('transform', `translate(${x}px, ${y}px)`);
     });
 }
 
@@ -82,7 +82,7 @@ function addCSSStylesWithScaleFix() {
         const elem = $(this);
         const { x, y } = elem.data();
 
-        elem.css('-webkit-transform', `translate(${x + 946}px, ${y + 330}px) scale(1.74, 1.41)`);
+        elem.css('transform', `translate(${x + 946}px, ${y + 330}px) scale(1.74, 1.41)`);
     });
 }
 
@@ -319,7 +319,7 @@ class Urlando {
                 scalingX = 1 / 3;
         }
 
-        $('#iFrames').css('-webkit-transform', `translate(0px,0px) scale(${scalingX}, ${scalingY})`);
+        $('#iFrames').css('transform', `translate(0px,0px) scale(${scalingX}, ${scalingY})`);
 
         if (chromeScalingFix) {
             addCSSStylesWithScaleFix();
