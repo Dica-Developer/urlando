@@ -86,27 +86,6 @@ function addCSSStylesWithScaleFix() {
     });
 }
 
-/*
-function translateToNextFrame() {
-  var scalingX;
-  switch (options.nrOfiFrames) {
-  case 1:
-    scalingX = 1;
-    break;
-  case 2:
-    scalingX = 1 / 2;
-    break;
-  default:
-    scalingX = 1 / 3;
-  }
-  var scalingY = 1 / Math.ceil(options.nrOfiFrames / 3);
-  $('#iFrames').css('-webkit-transform', 'translate(0px,0px) scale(' + scalingX + ',' + scalingY + ')');
-  if (options.chromeScalingFix) {
-    addCSSStylesWithScaleFix();
-  }
-}
-*/
-
 function loadOptions() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get((options) => {
