@@ -5,22 +5,19 @@ function getIframeMarkup(options) {
         idx,
         x,
         y,
-        url,
-        width,
-        height
+        url
     } = options;
 
     return `
         <div id="step_${idx}" class="iFrames" data-x="${x}" data-y="${y}">
-            <webview id="iFrame_${idx}" data-url="${url}" src="${url}" style="width:${width}px; height:${height}px;"></webview>
+            <webview id="iFrame_${idx}" data-url="${url}" src="${url}" ></webview>
         </div>
     `;
 }
 
 function addIFrames(urls) {
     $('#iFrames')
-        .css('transition', 'transform 0')
-        .css('transform', 'translate(0px,0px) scale(1, 1)')
+        .removeAttr('style')
         .empty();
 
     urls.forEach((options) => {
@@ -69,11 +66,14 @@ function openOptions() {
 }
 
 function addCSSStyles() {
+    const { innerWidth, innerHeight } = window;
+
     $('.iFrames').each(function() {
         const elem = $(this);
         const { x, y}  = elem.data();
 
         elem.css('transform', `translate(${x}px, ${y}px)`);
+        elem.find('webview').css({ height: innerHeight, width: innerWidth });
     });
 }
 
@@ -195,8 +195,6 @@ class Urlando {
 
             return {
                 url,
-                width,
-                height,
                 idx,
                 x,
                 y
@@ -204,7 +202,9 @@ class Urlando {
         });
 
         addIFrames(iFrameOptions);
-        this.applyStyles();
+
+        // timeout necessary because of the css transition time, otherwise false dimensions
+        setTimeout(this.applyStyles.bind(this), 2000);
     }
 
     reloadFrame() {
@@ -229,7 +229,7 @@ class Urlando {
     }
 
     transitionToFrame() {
-        const { reload, chromeScalingFix } = this.options;
+        const { reload } = this.options;
         const { x, y } = getFramePosition(this.currentFrameNr);
 
         if (reload) {
@@ -238,11 +238,7 @@ class Urlando {
 
         $('#iFrames').css('transform', `translate(${-x}px, ${-y}px) scale(1,1)`);
 
-        if (!chromeScalingFix) {
-            addCSSStyles();
-        } else {
-            addCSSStylesWithScaleFix();
-        }
+        this.applyStyles();
     }
 
     applyStyles() {
@@ -250,7 +246,7 @@ class Urlando {
 
         // TODO throw an event here!
         if (!chromeScalingFix) {
-          addCSSStyles();
+            addCSSStyles();
         } else {
             addCSSStylesWithScaleFix();
         }
@@ -283,7 +279,7 @@ class Urlando {
     }
 
     showOverview() {
-        const { nrOfiFrames, chromeScalingFix } = this.options;
+        const { nrOfiFrames } = this.options;
         const scalingY = 1 / Math.ceil(nrOfiFrames / 3);
         let scalingX;
 
@@ -300,9 +296,7 @@ class Urlando {
 
         $('#iFrames').css('transform', `translate(0px,0px) scale(${scalingX}, ${scalingY})`);
 
-        if (chromeScalingFix) {
-            addCSSStylesWithScaleFix();
-        }
+        this.applyStyles();
     }
 
     showFrame(event, keycombo) {
