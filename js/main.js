@@ -78,11 +78,14 @@ function addCSSStyles() {
 }
 
 function addCSSStylesWithScaleFix() {
+    const { innerWidth, innerHeight } = window;
+
     $('.iFrames').each(function () {
         const elem = $(this);
         const { x, y } = elem.data();
 
         elem.css('transform', `translate(${x + 946}px, ${y + 330}px) scale(1.74, 1.41)`);
+        elem.find('webview').css({ height: innerHeight, width: innerWidth });
     });
 }
 
