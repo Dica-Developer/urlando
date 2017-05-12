@@ -1,5 +1,25 @@
 const bindKey = Mousetrap.bind;
 
+// helper funtions
+function getHeight(resolution, ratio) {
+    const ratioSplit = ratio.split('/');
+
+    return (resolution / ratioSplit[0]) * ratioSplit[1];
+}
+
+function getPosition(idx, width, height) {
+  return {
+      x: (idx % 3) * width,
+      y: Math.floor(idx / 3) * height
+  };
+}
+
+function openOptions() {
+    chrome.app.window.create('../view/options.html', {
+      'bounds': { 'width': 684, 'height': 550 }
+    });
+}
+
 function getIframeMarkup(options) {
     const {
         idx,
@@ -37,32 +57,10 @@ function displayStatus(status) {
         });
 }
 
-function getHeight(resolution, ratio) {
-    const ratioSplit = ratio.split('/');
-
-    return (resolution / ratioSplit[0]) * ratioSplit[1];
-}
-
-function getPosition(idx, width, height) {
-  return {
-      x: (idx % 3) * width,
-      y: Math.floor(idx / 3) * height
-  };
-}
-
-function getFramePosition(iframe) {
-    const nextiFrame = $('.iFrames').eq(iframe);
+function getFramePosition(iframeNr) {
+    const nextiFrame = $('.iFrames').eq(iframeNr);
 
     return nextiFrame.data();
-}
-
-function openOptions() {
-    chrome.app.window.create("../view/options.html", {
-      "bounds": {
-        "width": 684,
-        "height": 550
-      }
-    });
 }
 
 function addCSSStyles() {
@@ -70,7 +68,7 @@ function addCSSStyles() {
 
     $('.iFrames').each(function() {
         const elem = $(this);
-        const { x, y}  = elem.data();
+        const { x, y }  = elem.data();
 
         elem.css('transform', `translate(${x}px, ${y}px)`);
         elem.find('webview').css({ height: innerHeight, width: innerWidth });
