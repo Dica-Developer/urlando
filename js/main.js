@@ -110,12 +110,36 @@ class Urlando {
         this.currentFrameNr = 0;
         this.animationIsRunning = false;
         this.isInOverview = false;
+        this.observers = {};
         this.bindKeys();
     }
 
     init(options) {
         this.options = this.prepareOptions(options);
+        this.bindEvents();
         this.render();
+    }
+
+    bindEvents() {
+    }
+
+    on(event, listener) {
+
+        if (!this.observers[event]) {
+            this.observers[event] = [];
+        }
+
+        this.observers[event].push(listener);
+    }
+
+    trigger(event, data) {
+        const listener = this.observers[event];
+
+        if (!listener) {
+            return;
+        }
+
+        listener.forEach((fn) => fn.call(this, data));
     }
 
     updateOptions() {
