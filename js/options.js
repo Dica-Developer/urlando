@@ -33,7 +33,9 @@ var updateOptions = function (successCallback) {
     reload: reload,
     duration: duration,
     random: random,
-    chromeScalingFix: chromeScalingFix
+    chromeScalingFix: chromeScalingFix,
+      osd: true,
+      osdTimeout: 5000
   };
   if (urls.length > 0) {
     options.urls = JSON.stringify(urls);

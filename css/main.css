@@ -10,7 +10,7 @@ body {
   left:0;
 }
 
-.iFrames {
+.view {
   position: absolute;
 }
 
@@ -26,4 +26,11 @@ body {
   top: calc((100% / 2) - 6rem);
   position: absolute;
   text-align: center;
+}
+
+#osd {
+    flex: 1;
+    position: absolute;
+    background-color: rgba(0, 0, 0, .3);
+    min-width: 100%;
 }
