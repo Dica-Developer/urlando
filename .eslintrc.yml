@@ -6,3 +6,5 @@ extends: eslint:recommended
 globals:
     Mousetrap: true
     chrome: true
+    Main: true
+    View: true

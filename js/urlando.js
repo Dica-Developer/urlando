@@ -35,7 +35,7 @@ function loadOptions() {
     });
 }
 
-class Urlando extends window.Main {
+class Urlando extends Main {
 
     constructor() {
         super();
@@ -143,7 +143,7 @@ class Urlando extends window.Main {
 
         this.views = urls.map(({ url }, idx) => {
             const { x, y } = getPosition(idx, width, height);
-            const view = new window.View({
+            const view = new View({
                 url,
                 width,
                 height,
