@@ -13,7 +13,7 @@ function getPosition(idx, width, height) {
 
 function openOptions() {
     chrome.app.window.create('../view/options.html', {
-      'bounds': { 'width': 684, 'height': 550 }
+      'bounds': { 'width': 1024, 'height': 768 }
     });
 }
 
