@@ -1,16 +1,3 @@
-function throttle(fn, wait) {
-    let time = Date.now();
-
-    return () => {
-        const now = Date.now();
-
-        if ((time + wait - now) < 0) {
-            fn.call();
-            time = now;
-        }
-    };
-}
-
 function getHeight(resolution, ratio) {
     const ratioSplit = ratio.split('/');
 

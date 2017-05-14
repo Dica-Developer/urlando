@@ -79,6 +79,29 @@ class Main {
         resetKeys();
         bindKeys(shortcuts);
     }
+
+    throttle(fn, wait) {
+        let time = Date.now();
+
+        return () => {
+            const now = Date.now();
+
+            if ((time + wait - now) < 0) {
+                fn.call();
+                time = now;
+            }
+        };
+    }
+
+    debounce(fn, wait) {
+        let timeoutId = null;
+
+        return () => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn.call(), wait);
+        };
+
+    }
 }
 
 window.Main = Main;
