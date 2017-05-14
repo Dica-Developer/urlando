@@ -3,7 +3,7 @@ body {
 }
 
 #iFrames {
-  transition:-webkit-transform 2s;
+  transition: transform 2s;
   transform: scale(1,1);
   position: absolute;
   top:0;
@@ -26,6 +26,7 @@ body {
   top: calc((100% / 2) - 6rem);
   position: absolute;
   text-align: center;
+  transition: opacity 1250ms;
 }
 
 #osd {

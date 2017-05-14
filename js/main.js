@@ -68,11 +68,11 @@ class Main {
     }
 
     displayStatus(status) {
-        this.$status
-            .text(status)
-            .animate({ opacity: 1 }, 1250, () => {
-                this.$status.animate({ opacity: 0 }, 1250);
-            });
+        this.$status.text(status);
+        this.addCssToElem(this.$status, { opacity: 1 });
+        setTimeout(() => {
+            this.addCssToElem(this.$status, { opacity: 0 });
+        }, 1250);
     }
 
     bindShortcuts(shortcuts) {
