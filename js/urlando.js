@@ -104,9 +104,15 @@ class Urlando extends Main {
         this.transitionToView();
     }
 
-    prepareOptions(options){
-        const urls = JSON.parse(options.urls);
+    prepareOptions(options) {
         const { duration } = options;
+        let urls;
+
+        if (typeof options.urls === 'string') {
+            urls = JSON.parse(options.urls);
+        } else {
+            urls = options.urls;
+        }
 
         return Object.assign(
             {},
