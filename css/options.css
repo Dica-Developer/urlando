@@ -7,14 +7,6 @@ dt {
     float: left;
     text-align: right;
 }
-.minus {
-    background: url('../images/minus.png');
-    display: none;
-}
-
-.plus {
-    background: url('../images/plus.png');
-}
 
 .addRemoveIcons {
     width: 12px;
