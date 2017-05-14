@@ -44,11 +44,11 @@ class Urlando extends Main {
         this.views = null;
         this.animationIsRunning = false;
         this.$el = $('#iFrames');
-        this.bindEvents();
     }
 
     init(options) {
         this.options = this.prepareOptions(options);
+        this.bindEvents();
         this.render();
     }
 
@@ -106,9 +106,7 @@ class Urlando extends Main {
 
     prepareOptions(options){
         const urls = JSON.parse(options.urls);
-        const {
-            duration
-        } = options;
+        const { duration } = options;
 
         return Object.assign(
             {},
@@ -116,7 +114,6 @@ class Urlando extends Main {
             options,
             {
                 urls,
-                nrOfiFrames: urls.length,
                 duration: parseInt(duration, 10) * 1000
             }
         );
