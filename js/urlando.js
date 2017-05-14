@@ -53,7 +53,6 @@ class Urlando extends Main {
     }
 
     bindEvents() {
-        $(window).on('resize', this.render.bind(this));
         this.bindShortcuts({
             'mod+s': this.toggleAnimation.bind(this),
             'mod+o': openOptions,
@@ -70,6 +69,10 @@ class Urlando extends Main {
             'mod+right': this.nextView.bind(this),
             'mod+left': this.previousView.bind(this)
         });
+
+        $(window)
+            .off('resize')
+            .on('resize', this.debounce(this.render.bind(this), 500));
     }
 
     updateOptions() {
