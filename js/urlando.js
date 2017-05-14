@@ -44,15 +44,21 @@ class Urlando extends Main {
         this.views = null;
         this.animationIsRunning = false;
         this.$el = $('#iFrames');
+        this.osd = new MainOSD($('.osd'));
     }
 
     init(options) {
+        const { osd, osdTimeout } = options;
+
         this.options = this.prepareOptions(options);
+        this.osd.trigger('isActivated', { osd, osdTimeout });
         this.bindEvents();
         this.render();
     }
 
     bindEvents() {
+        const { osd } = this.options;
+
         this.bindShortcuts({
             'mod+s': this.toggleAnimation.bind(this),
             'mod+o': openOptions,
@@ -73,6 +79,12 @@ class Urlando extends Main {
         $(window)
             .off('resize')
             .on('resize', this.debounce(this.render.bind(this), 500));
+
+        if (osd) {
+            this.$el
+                .off()
+                .on('mousemove', () => this.osd.trigger('show'));
+        }
     }
 
     updateOptions() {
@@ -132,8 +144,7 @@ class Urlando extends Main {
         const {
             resolution,
             ratio,
-            urls,
-            osd
+            urls
         } = this.options;
         let width = resolution;
         let height = 0;
@@ -162,11 +173,6 @@ class Urlando extends Main {
 
             return view;
         });
-
-
-        if (osd) {
-            this.addOSD();
-        }
 
         this.currentView = this.views[0];
 
@@ -270,10 +276,6 @@ class Urlando extends Main {
         this.switchToPrevFrame();
     }
 
-    addOSD() {
-        this.bindOSDEvent();
-    }
-
     showOSD() {
         const { osdTimeout } = this.options;
 
@@ -283,12 +285,6 @@ class Urlando extends Main {
         this.osdTimeoutId = setTimeout(() => {
             $('#osd').hide();
         }, osdTimeout);
-    }
-
-    bindOSDEvent() {
-        const { osdTimeout } = this.options;
-
-        $('#iFrames').on('mousemove', throttle(this.showOSD.bind(this), osdTimeout));
     }
 
 }

@@ -8,3 +8,4 @@ globals:
     chrome: true
     Main: true
     View: true
+    MainOSD: true
