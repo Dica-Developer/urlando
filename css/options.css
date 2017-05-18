@@ -10,14 +10,14 @@ dt {
 }
 
 dd {
-    overflow: scroll;
+    overflow: auto;
 }
 
 .urlContainer {
     max-height: 300px;
     min-width: 700px;
     padding: 5px;
-    overflow: scroll;
+    overflow: auto;
     border-width: 1px;
     border-style: solid;
     border-color: #bbbbbb;
@@ -25,3 +25,9 @@ dd {
 
 .url_title {
     display: none;
+}
+
+.main_buttons {
+    text-align: right;
+    padding: 10px;
+}

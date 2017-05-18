@@ -7,10 +7,12 @@ function getMarkup(url) {
 }
 
 class View extends window.Main{
-    constructor(options) {
+    constructor(options, osd) {
         super();
 
+        this.osd = osd;
         this.options = options;
+        this.on('active', this.isActive.bind(this));
 
         const { url } = this.options;
         const markup = getMarkup(url);
@@ -39,6 +41,17 @@ class View extends window.Main{
         const { idx } = this.options;
 
         return idx;
+    }
+
+    isActive() {
+        const { showTitle, title, url } = this.options;
+
+        if (!showTitle) {
+            this.osd.trigger('clearTitle');
+            return;
+        }
+
+        this.osd.trigger('setTitle', title !== '' ? title : url);
     }
 
     reload() {

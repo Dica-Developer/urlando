@@ -62,6 +62,7 @@ class Options {
         this.$ratio = this.generalForm.find('#ratio');
         this.$save = $('#saveOptions');
         this.$update = $('#updateOptions');
+        this.$cancel = $('#cancelOptions');
     }
 
     init(options) {
@@ -87,15 +88,12 @@ class Options {
             chromeScalingFix,
             duration,
             osd,
-            osdTimeout,
             random,
             ratio,
             reload,
             resolution,
             urls
         } = this.options;
-
-        console.log(this.options);
 
         this.generalForm.find('#chromeScalingFix').prop('checked', chromeScalingFix);
         this.generalForm.find('#osd').prop('checked', osd);
@@ -114,7 +112,8 @@ class Options {
 
         this.$resolution.on('change', this.toggleRatio.bind(this));
         this.$save.on('click', this.save.bind(this));
-        this.$update.on('click', this.serialize.bind(this));
+        this.$update.on('click', this.update.bind(this));
+        this.$cancel.on('click', this.close.bind(this));
         this.urlForm.on('click', '.remove', removeUrl);
         this.urlForm.on('click', '.add', addUrl);
         this.urlForm.on('click', '.show_title', showTitle);
@@ -180,19 +179,31 @@ class Options {
         );
     }
 
-    save() {
+    update(closeAfterUpdate = false) {
         const options = this.serialize();
 
-        chrome.storage.local.set(options, function () {
+        chrome.storage.local.set(options, () => {
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError); // eslint-disable-line
             } else {
                 chrome.runtime.sendMessage('options.updated');
-                chrome.app.window.current().close();
+            }
+
+            if (typeof closeAfterUpdate === 'boolean' && closeAfterUpdate) {
+                this.close();
             }
         });
+    }
+
+    save() {
+        this.update(true);
+    }
+
+    close() {
+        chrome.app.window.current().close();
     }
 }
 
 const options = new Options();
+
 chrome.storage.local.get(options.init.bind(options));

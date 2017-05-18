@@ -10,6 +10,8 @@ class OSD extends Main {
     }
 
     show() {
+        this.setTime();
+
         this.addCssToElem(this.$el, { top: 0 });
 
         if (this.timeout) {
@@ -19,18 +21,7 @@ class OSD extends Main {
     }
 
     hide() {
-        this.addCssToElem(this.$el, { top: -50 });
-    }
-
-    bindEvents() {
-    }
-}
-
-class MainOSD extends OSD {
-    constructor(elem) {
-        super(elem);
-
-        this.timeout = null;
+        this.addCssToElem(this.$el, { top: -30 });
     }
 
     bindEvents(options) {
@@ -42,11 +33,34 @@ class MainOSD extends OSD {
 
         this.timeout = osdTimeout;
         this.on('show', this.throttle(this.show.bind(this), osdTimeout));
+        this.on('setTitle', this.setTitle.bind(this));
+        this.on('clearTitle', this.clearTitle.bind(this));
+        this.on('toggleAnimation', this.toggleAnimationStatus.bind(this));
     }
 
-    show() {
-        super.show();
+    clearTitle() {
+        this.setTitle('');
+    }
+
+    setTitle(title) {
+        this.$el.find('.title').text(title);
+    }
+
+    setTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('us', { // todo make locale customizable
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        this.$el.find('.time').text(timeString);
+    }
+
+    toggleAnimationStatus(animationRunning) {
+        this.$el.find('.animation')
+            .toggleClass('play', animationRunning)
+            .toggleClass('pause', !animationRunning);
     }
 }
 
-window.MainOSD = MainOSD;
+window.OSD = OSD;

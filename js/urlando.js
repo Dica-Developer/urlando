@@ -44,7 +44,7 @@ class Urlando extends Main {
         this.views = null;
         this.animationIsRunning = false;
         this.$el = $('#iFrames');
-        this.osd = new MainOSD($('.osd'));
+        this.osd = new OSD($('.osd'));
     }
 
     init(options) {
@@ -97,6 +97,7 @@ class Urlando extends Main {
         const nrOfViews = this.views.length;
         const nextViewNr = Math.floor(Math.random() * nrOfViews);
 
+        this.currentView.trigger('inactive');
         this.currentView = this.views[nextViewNr];
         this.transitionToView();
     }
@@ -106,6 +107,7 @@ class Urlando extends Main {
         const currentViewNr = this.currentView.getIdx();
         const nextViewNr = currentViewNr + 1;
 
+        this.currentView.trigger('inactive');
         this.currentView = this.views[nextViewNr >= nrOfViews ? 0 : nextViewNr];
         this.transitionToView();
     }
@@ -115,11 +117,13 @@ class Urlando extends Main {
         const currentViewNr = this.currentView.getIdx();
         const prevViewNr = currentViewNr - 1;
 
+        this.currentView.trigger('inactive');
         this.currentView = this.views[prevViewNr < 0 ? nrOfViews -1 : prevViewNr];
         this.transitionToView();
     }
 
     prepareOptions(options) {
+        console.log(options);
         const { duration } = options;
         let urls;
 
@@ -128,6 +132,7 @@ class Urlando extends Main {
         } else {
             urls = options.urls;
         }
+
 
         return Object.assign(
             {},
@@ -158,16 +163,18 @@ class Urlando extends Main {
 
         this.$el.empty();
 
-        this.views = urls.map(({ url }, idx) => {
+        this.views = urls.map(({ url, showTitle, title }, idx) => {
             const { x, y } = getPosition(idx, width, height);
             const view = new View({
                 url,
+                showTitle,
+                title,
                 width,
                 height,
                 idx,
                 x,
                 y
-            });
+            }, this.osd);
 
             view.addTo(this.$el);
 
@@ -183,7 +190,7 @@ class Urlando extends Main {
     }
 
     animate() {
-        const { random } = this.options;
+        const { random, duration } = this.options;
         const timeout = this.animationIsRunning ? 5000 : 0;
 
         if (this.isOverview) {
@@ -192,6 +199,10 @@ class Urlando extends Main {
 
         this.showOverview();
         setTimeout(() => {
+            const now = Date.now();
+
+            this.timeToNextSwitch = now + duration;
+
             random ? this.switchToRandomFrame() : this.switchToNextFrame();
         }, timeout);
     }
@@ -204,6 +215,7 @@ class Urlando extends Main {
             this.currentView.reload();
         }
 
+        this.currentView.trigger('active');
         this.isOverview = false;
         this.addCssToElem(this.$el, { transform: `translate(${-x}px, ${-y}px)` });
     }
@@ -217,6 +229,7 @@ class Urlando extends Main {
 
         this.animationIsRunning = true;
         this.displayStatus('animation started');
+        this.osd.trigger('toggleAnimation', this.animationIsRunning);
         this.animationIntervalId = setInterval(this.animate.bind(this), duration);
     }
 
@@ -227,6 +240,7 @@ class Urlando extends Main {
 
         this.animationIsRunning = false;
         this.displayStatus('animation stopped');
+        this.osd.trigger('toggleAnimation', this.animationIsRunning);
         clearInterval(this.animationIntervalId);
     }
 
@@ -263,6 +277,7 @@ class Urlando extends Main {
         }
 
         this.currentView = this.views[viewNr];
+        this.stopAnimation();
         this.transitionToView();
     }
 
