@@ -5,10 +5,10 @@ function getHeight(resolution, ratio) {
 }
 
 function getPosition(idx, width, height) {
-  return {
-      x: (idx % 3) * width,
-      y: Math.floor(idx / 3) * height
-  };
+    return {
+        x: (idx % 3) * width,
+        y: Math.floor(idx / 3) * height
+    };
 }
 
 function openOptions() {
@@ -45,6 +45,7 @@ class Urlando extends Main {
         this.animationIsRunning = false;
         this.$el = $('#iFrames');
         this.osd = new OSD();
+        this.viewMatrix = [];
     }
 
     init(options) {
@@ -73,7 +74,9 @@ class Urlando extends Main {
             'mod+8': this.showView.bind(this),
             'mod+9': this.showView.bind(this),
             'mod+right': this.nextView.bind(this),
-            'mod+left': this.previousView.bind(this)
+            'mod+left': this.previousView.bind(this),
+            'mod+down': this.switchToViewBelow.bind(this),
+            'mod+up': this.switchToViewAbove.bind(this)
         });
 
         $(window)
@@ -122,8 +125,66 @@ class Urlando extends Main {
         this.transitionToView();
     }
 
+    switchToViewAbove() {
+        const length = this.views.length;
+        const currentViewNr = this.currentView.getIdx();
+        const possibleNext = currentViewNr - 3;
+
+        if (length < 4) {
+            return;
+        }
+
+        if (possibleNext > 0) {
+            this.currentView = this.views[possibleNext];
+            this.transitionToView();
+            return;
+        }
+
+        const nextViewNr = this.getNextViewNrFomMatrix(currentViewNr, false);
+
+        this.currentView = this.views[nextViewNr];
+        this.transitionToView();
+    }
+
+    switchToViewBelow() {
+        const length = this.views.length;
+        const currentViewNr = this.currentView.getIdx();
+        const possibleNext = currentViewNr + 3;
+
+        if (length < 4) {
+            return;
+        }
+
+        if (possibleNext < length) {
+            this.currentView = this.views[possibleNext];
+            this.transitionToView();
+            return;
+        }
+
+        const nextViewNr = this.getNextViewNrFomMatrix(currentViewNr, true);
+
+        this.currentView = this.views[nextViewNr];
+        this.transitionToView();
+    }
+
+    getNextViewNrFomMatrix(idx, down) {
+        const x = Math.floor(idx / 3);
+        const y = idx % 3;
+        const matrix = this.viewMatrix;
+        const length = matrix.length;
+
+        if (down) {
+            const possibleNext = matrix[x + 1] && matrix[x + 1][y];
+
+            return typeof possibleNext === 'undefined' ? matrix[0][y] : possibleNext;
+        }
+
+        const possibleNext = matrix[length - 1] && matrix[length - 1][y];
+
+        return typeof possibleNext === 'undefined' ? matrix[length - 2][y] : possibleNext;
+    }
+
     prepareOptions(options) {
-        console.log(options);
         const { duration } = options;
         let urls;
 
@@ -176,6 +237,7 @@ class Urlando extends Main {
                 y
             }, this.osd);
 
+            this.addIndexToMatrix(idx);
             view.addTo(this.$el);
 
             return view;
@@ -187,6 +249,20 @@ class Urlando extends Main {
         setTimeout(() => {
             this.views.forEach((view) => view.addStyles());
         }, 2000);
+    }
+
+    addIndexToMatrix(idx) {
+        const matrix = this.viewMatrix;
+        const x = Math.floor(idx / 3);
+        const y = idx % 3;
+
+        if (typeof matrix[x] === 'undefined') {
+            matrix[x] = [];
+        }
+
+        matrix[x][y] = idx;
+
+        this.viewMatrix = [].concat(matrix);
     }
 
     animate() {

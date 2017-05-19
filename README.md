@@ -11,6 +11,8 @@ Available in the <a href="https://chrome.google.com/webstore/detail/urlando/eppc
 <tr><td>mod+1-9</td><td>jump to the URL with the specified index</td></tr>
 <tr><td>mod+right</td><td>jump to the next URL (stops animation)</td></tr>
 <tr><td>mod+left</td><td>jump to the previous URL (stops animation)</td></tr>
+<tr><td>mod+up</td><td>jump to view above (stops animation)</td></tr>
+<tr><td>mod+down</td><td>jump to view below (stops animation)</td></tr>
 <tr><td>mod+s</td><td>start/stop animation</td></tr>
 <tr><td>mod+o</td><td>open options</td></tr>
 <tr><td>esc</td><td>closes options without save</td></tr>
