@@ -1,8 +1,8 @@
 class OSD extends Main {
-    constructor(elem) {
+    constructor() {
         super();
 
-        this.$el = elem;
+        this.$el = $('.osd');
         this.timeout = null;
         this.timeoutId = null;
 

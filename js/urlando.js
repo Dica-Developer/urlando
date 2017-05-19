@@ -44,7 +44,7 @@ class Urlando extends Main {
         this.views = null;
         this.animationIsRunning = false;
         this.$el = $('#iFrames');
-        this.osd = new OSD($('.osd'));
+        this.osd = new OSD();
     }
 
     init(options) {
@@ -290,18 +290,6 @@ class Urlando extends Main {
         this.stopAnimation();
         this.switchToPrevFrame();
     }
-
-    showOSD() {
-        const { osdTimeout } = this.options;
-
-        $('#osd').show();
-
-        clearTimeout(this.osdTimeoutId);
-        this.osdTimeoutId = setTimeout(() => {
-            $('#osd').hide();
-        }, osdTimeout);
-    }
-
 }
 
 $(() => {
