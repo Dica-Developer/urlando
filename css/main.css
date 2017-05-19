@@ -33,6 +33,7 @@ body {
     display: flex;
     position: fixed;
     top: -30px;
+    left: 0;
     min-width: 100%;
     transition: top 1s;
 }
