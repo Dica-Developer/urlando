@@ -270,7 +270,7 @@ class Urlando extends Main {
     }
 
     animate() {
-        const { random, duration } = this.options;
+        const { random } = this.options;
         const timeout = this.animationIsRunning ? 5000 : 0;
 
         if (this.isOverview) {
@@ -279,10 +279,6 @@ class Urlando extends Main {
 
         this.showOverview();
         setTimeout(() => {
-            const now = Date.now();
-
-            this.timeToNextSwitch = now + duration;
-
             random ? this.switchToRandomFrame() : this.switchToNextFrame();
         }, timeout);
     }
