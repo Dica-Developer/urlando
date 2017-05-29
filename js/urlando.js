@@ -130,6 +130,8 @@ class Urlando extends Main {
         const currentViewNr = this.currentView.getIdx();
         const possibleNext = currentViewNr - 3;
 
+        this.currentView.trigger('inactive');
+
         if (length < 4) {
             return;
         }
@@ -150,6 +152,8 @@ class Urlando extends Main {
         const length = this.views.length;
         const currentViewNr = this.currentView.getIdx();
         const possibleNext = currentViewNr + 3;
+
+        this.currentView.trigger('inactive');
 
         if (length < 4) {
             return;
