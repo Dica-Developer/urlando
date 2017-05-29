@@ -1,3 +1,4 @@
+
 dt, dd {
     margin:0 10px;
     line-height: 30px;
@@ -7,34 +8,26 @@ dt {
     float: left;
     text-align: right;
 }
-.minus {
-    background: url('../images/minus.png');
-    display: none;
-}
 
-.plus {
-    background: url('../images/plus.png');
-}
-
-.addRemoveIcons {
-    width: 12px;
-    height: 12px;
-    cursor: pointer;
-    float: left;
-}
-
-.urlInput {
-    float: left;
-}
-
-.urlInputDiv {
-    height: 35px;
+dd {
+    overflow: auto;
 }
 
 .urlContainer {
-    height: 200px;
-    overflow: scroll;
+    max-height: 300px;
+    min-width: 700px;
+    padding: 5px;
+    overflow: auto;
     border-width: 1px;
     border-style: solid;
     border-color: #bbbbbb;
+}
+
+.url_title {
+    display: none;
+}
+
+.main_buttons {
+    text-align: right;
+    padding: 10px;
 }
