@@ -49,12 +49,15 @@ class Urlando extends Main {
     }
 
     init(options) {
-        const { osd, osdTimeout } = options;
+        return new Promise((resolve, reject) => {
+            const { osd, osdTimeout } = options;
 
-        this.options = this.prepareOptions(options);
-        this.osd.trigger('isActivated', { osd, osdTimeout });
-        this.bindEvents();
-        this.render();
+            this.options = this.prepareOptions(options);
+            this.osd.trigger('isActivated', { osd, osdTimeout });
+            this.bindEvents();
+            this.render();
+            resolve();
+        });
     }
 
     bindEvents() {
@@ -378,5 +381,6 @@ $(() => {
     chrome.runtime.onMessage.addListener(urlando.updateOptions.bind(urlando));
     loadOptions()
         .then(urlando.init.bind(urlando))
+        .then(urlando.startAnimation.bind(urlando))
         .catch(console.error); // eslint-disable-line
 });
