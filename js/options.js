@@ -108,7 +108,9 @@ class Options {
     }
 
     bindEvents() {
-        Mousetrap.bind('esc', chrome.app.window.current().close);
+        Mousetrap.bind('esc', () => {
+            chrome.app.window.current().close();
+        });
 
         this.$resolution.on('change', this.toggleRatio.bind(this));
         this.$save.on('click', this.save.bind(this));
