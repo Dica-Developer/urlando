@@ -80,10 +80,10 @@ class Urlando extends Main {
             'mod+left': this.previousView.bind(this),
             'mod+down': this.switchToViewBelow.bind(this),
             'mod+up': this.switchToViewAbove.bind(this),
-            'l': this.nextView.bind(this),
-            'h': this.previousView.bind(this),
-            'j': this.switchToViewBelow.bind(this),
-            'k': this.switchToViewAbove.bind(this)
+            'mod+l': this.nextView.bind(this),
+            'mod+h': this.previousView.bind(this),
+            'mod+j': this.switchToViewBelow.bind(this),
+            'mod+k': this.switchToViewAbove.bind(this)
         });
 
         $(window)
